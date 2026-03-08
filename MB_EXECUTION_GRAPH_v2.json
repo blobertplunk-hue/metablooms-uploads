@@ -1,0 +1,551 @@
+{
+  "schema": "MB-EXECUTION-GRAPH-V2-1.0",
+  "graph_id": "MB_EXECUTION_GRAPH_v2",
+  "generated_utc": "2026-03-07T15:54:06.146659+00:00",
+  "derived_from": {
+    "freeze": "KERNEL_ADOPTION_FREEZE_v4.json",
+    "freeze_hash": "sha256:9e7ef528daca42017d9a9aad8c70b003eeb098c0b39f4cd27b17bdbd7d62d896",
+    "matrix": "KERNEL_WIRING_VALIDATION_MATRIX_v6.json",
+    "matrix_hash": "sha256:f59cb377de43b5844e37479fd5f7d58634fe52e619475644e8cf04ff77d283a9"
+  },
+  "node_count": 23,
+  "edge_count": 46,
+  "layer_summary": {
+    "kernel_frozen": 14,
+    "reasoning_mpp": 1,
+    "composition": 2,
+    "runtime_extension": 4,
+    "engine_package": 2
+  },
+  "missing_nodes": [],
+  "freeze_hash_mismatches": [],
+  "integrity_ok": true,
+  "canonical_execution_path": [
+    "capability_resolver",
+    "pipeline_planner",
+    "reasoning_engine",
+    "governance_compiler",
+    "kernel_mpp_executor",
+    "artifact_store",
+    "commit_system"
+  ],
+  "nodes": {
+    "artifact_store": {
+      "layer": "kernel_frozen",
+      "path": "kernel/artifact_store/artifact_store.py",
+      "hash": "sha256:7e2ce120ff1b47981ac2ca27fa5163bfea43b83d6f1c80da4c2014722cd36eaf",
+      "exists": true,
+      "cross_component_imports": [
+        "fingerprint_engine"
+      ],
+      "freeze_verified": true
+    },
+    "commit_system": {
+      "layer": "kernel_frozen",
+      "path": "kernel/commit_system/commit_system.py",
+      "hash": "sha256:a745d4b36f3f3b71ecdd215765bc223f0e27b4142f93d6c2c25a0e8cdf9ace2b",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "fingerprint_engine"
+      ],
+      "freeze_verified": true
+    },
+    "state_loader": {
+      "layer": "kernel_frozen",
+      "path": "kernel/state_loader/state_loader.py",
+      "hash": "sha256:504f1c1a7abd75b4b9668fca9e5d004372f8b73038738fe200d779fa02bbac32",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "commit_system",
+        "fingerprint_engine"
+      ],
+      "freeze_verified": true
+    },
+    "fingerprint_engine": {
+      "layer": "kernel_frozen",
+      "path": "kernel/fingerprint_engine/fingerprint_engine.py",
+      "hash": "sha256:93779dff2cb8adbd71a5ebe61949f3961629c1e9751974dc77d6e533c0af1101",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": true
+    },
+    "phase_registry": {
+      "layer": "kernel_frozen",
+      "path": "kernel/phase_registry/phase_registry.py",
+      "hash": "sha256:9cf82a56ec6a7b614cae81ae9d6da161bd1237874f529cf317e962888e4213f1",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": true
+    },
+    "ir_registry": {
+      "layer": "kernel_frozen",
+      "path": "kernel/ir_registry/ir_registry.py",
+      "hash": "sha256:a36a909adb2d1c7c9c2797c0deb5a79091d45d756e9b3bf46d34e9334d44da57",
+      "exists": true,
+      "cross_component_imports": [
+        "fingerprint_engine"
+      ],
+      "freeze_verified": true
+    },
+    "pipeline_planner": {
+      "layer": "kernel_frozen",
+      "path": "kernel/pipeline_planner/pipeline_planner.py",
+      "hash": "sha256:3396214d3210eeb2c72e72762697bbae9e8ea4cbd5f5f82cfad9cd20c3125648",
+      "exists": true,
+      "cross_component_imports": [
+        "phase_registry"
+      ],
+      "freeze_verified": true
+    },
+    "pipeline_determinism_guard": {
+      "layer": "kernel_frozen",
+      "path": "kernel/pipeline_planner/pipeline_determinism_guard.py",
+      "hash": "sha256:71a577afed411a3a823214e20ce37c86cc201d2923d4d23786d8d052df993fc2",
+      "exists": true,
+      "cross_component_imports": [
+        "phase_registry"
+      ],
+      "freeze_verified": true
+    },
+    "governance_compiler": {
+      "layer": "kernel_frozen",
+      "path": "kernel/governance_compiler/governance_compiler.py",
+      "hash": "sha256:e86b40f1d5cbca87079e37d05a291465968d0cc8a9f14cc6d01479255a3b7322",
+      "exists": true,
+      "cross_component_imports": [
+        "phase_registry"
+      ],
+      "freeze_verified": true
+    },
+    "mpp_executor": {
+      "layer": "kernel_frozen",
+      "path": "kernel/mpp_executor/mpp_executor.py",
+      "hash": "sha256:714626aab4de979403e15e805a37695e9a12262aff0a54e8572167e464937f28",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "commit_system",
+        "state_loader"
+      ],
+      "freeze_verified": true
+    },
+    "engine_registry": {
+      "layer": "kernel_frozen",
+      "path": "kernel/engine_registry/engine_registry.py",
+      "hash": "sha256:40b2d5425b5a8b39f7715cacc9b095e94e020aece58f22ddf4268afea8d40697",
+      "exists": true,
+      "cross_component_imports": [
+        "fingerprint_engine"
+      ],
+      "freeze_verified": true
+    },
+    "capability_resolver": {
+      "layer": "kernel_frozen",
+      "path": "kernel/capability_resolver/capability_resolver.py",
+      "hash": "sha256:c9ebf9c192bebfde8ee92423ac8878d2005c20f5fb37e2205c8993822d7a5a74",
+      "exists": true,
+      "cross_component_imports": [
+        "phase_registry"
+      ],
+      "freeze_verified": true
+    },
+    "kernel_context": {
+      "layer": "kernel_frozen",
+      "path": "kernel/kernel_context.py",
+      "hash": "sha256:7f77daea4111c69c84c5de8741912092576314697694895de245604a6293bea9",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "capability_resolver",
+        "commit_system",
+        "engine_registry",
+        "governance_compiler",
+        "mpp_executor",
+        "phase_registry",
+        "pipeline_planner",
+        "state_loader"
+      ],
+      "freeze_verified": true
+    },
+    "validation_runner": {
+      "layer": "kernel_frozen",
+      "path": "kernel/validation/kernel_wiring_validation_runner.py",
+      "hash": "sha256:c929ba92282f8d826b6caf27cb950a3785f427982f2d145ada3e7f076cd3f9ba",
+      "exists": true,
+      "cross_component_imports": [
+        "fingerprint_engine",
+        "kernel_context"
+      ],
+      "freeze_verified": true
+    },
+    "reasoning_engine": {
+      "layer": "reasoning_mpp",
+      "path": "kernel/reasoning_engine/reasoning_engine.py",
+      "hash": "sha256:4f082b2b9dc5d06a3a67cc333f30ed12eda74e3298276d56f564fcc347417d55",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "commit_system",
+        "fingerprint_engine"
+      ],
+      "freeze_verified": null
+    },
+    "kernel_wired_orchestrator": {
+      "layer": "composition",
+      "path": "kernel/kernel_wired_orchestrator.py",
+      "hash": "sha256:bd94d18552668a30cad7f3e8711a4b79a33e2a20008d974788d5ad958448ef02",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    },
+    "kernel_replay_pack_generator": {
+      "layer": "composition",
+      "path": "kernel/kernel_replay_pack_generator.py",
+      "hash": "sha256:95bbe7cffac6800956fd43e01c8974f8049995b5eb703c075706f57ea0f4e8e6",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "commit_system",
+        "fingerprint_engine"
+      ],
+      "freeze_verified": null
+    },
+    "artifact_graph_index_engine": {
+      "layer": "runtime_extension",
+      "path": "runtime/artifact_graph_index_engine.py",
+      "hash": "sha256:db8971ea9ad3a04dc3d12419eb1570965eabe60c5c822376603d343a423cda59",
+      "exists": true,
+      "cross_component_imports": [
+        "artifact_store",
+        "commit_system"
+      ],
+      "freeze_verified": null
+    },
+    "capability_graph_engine": {
+      "layer": "runtime_extension",
+      "path": "runtime/capability_graph_engine.py",
+      "hash": "sha256:3628ad46710dc07b4e4516551c10a45d296bfea35c3f465a0a19d327ce3597b6",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    },
+    "semantic_capability_graph_builder": {
+      "layer": "runtime_extension",
+      "path": "runtime/semantic_capability_graph_builder.py",
+      "hash": "sha256:89220fa7a750fbaea7483239bd39d77c7771e050e5e665d9eda02f16d11004db",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    },
+    "system_dashboard_engine": {
+      "layer": "runtime_extension",
+      "path": "runtime/system_dashboard_engine.py",
+      "hash": "sha256:c5a13c83d52e8152d4d7206cf360e5b78f70350b0da233d07c1e058590d3b6ec",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    },
+    "egg_juicer_engine_interface": {
+      "layer": "engine_package",
+      "path": "runtime/engines/egg_juicer_package/engine_interface.py",
+      "hash": "sha256:fe4e28443fc750ae56f5049dd4a4ae98752bd42a78895f1e8bd66e11a522289f",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    },
+    "egg_juicer_engine_logic": {
+      "layer": "engine_package",
+      "path": "runtime/engines/egg_juicer_package/engine_logic.py",
+      "hash": "sha256:d9cbb0cd1da81f46ecbd2f8a2ff7c8486791d65690caa1bed1ca1f7add62209f",
+      "exists": true,
+      "cross_component_imports": [],
+      "freeze_verified": null
+    }
+  },
+  "edges": {
+    "execution_sequence": [
+      {
+        "from": "capability_resolver",
+        "to": "pipeline_planner",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      },
+      {
+        "from": "pipeline_planner",
+        "to": "reasoning_engine",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      },
+      {
+        "from": "reasoning_engine",
+        "to": "governance_compiler",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      },
+      {
+        "from": "governance_compiler",
+        "to": "kernel_mpp_executor",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      },
+      {
+        "from": "kernel_mpp_executor",
+        "to": "artifact_store",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      },
+      {
+        "from": "artifact_store",
+        "to": "commit_system",
+        "edge_type": "execution_sequence",
+        "source": "freeze_v4_reference_call_sequence"
+      }
+    ],
+    "import_dependencies": [
+      {
+        "from": "artifact_store",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "commit_system",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "commit_system",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "state_loader",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "state_loader",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "state_loader",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "ir_registry",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "pipeline_planner",
+        "to": "phase_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "pipeline_determinism_guard",
+        "to": "phase_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "governance_compiler",
+        "to": "phase_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "mpp_executor",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "mpp_executor",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "mpp_executor",
+        "to": "state_loader",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "engine_registry",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "capability_resolver",
+        "to": "phase_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "capability_resolver",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "engine_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "governance_compiler",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "mpp_executor",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "phase_registry",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "pipeline_planner",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_context",
+        "to": "state_loader",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "validation_runner",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "validation_runner",
+        "to": "kernel_context",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "reasoning_engine",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "reasoning_engine",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "reasoning_engine",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_replay_pack_generator",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_replay_pack_generator",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "kernel_replay_pack_generator",
+        "to": "fingerprint_engine",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "artifact_graph_index_engine",
+        "to": "artifact_store",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      },
+      {
+        "from": "artifact_graph_index_engine",
+        "to": "commit_system",
+        "edge_type": "import_dependency",
+        "source": "ast_derived"
+      }
+    ],
+    "artifact_flows": [
+      {
+        "from": "reasoning_engine",
+        "to": "artifact_store",
+        "edge_type": "artifact_write",
+        "artifact": "R1-R6"
+      },
+      {
+        "from": "reasoning_engine",
+        "to": "commit_system",
+        "edge_type": "commit_write",
+        "artifact": "reasoning_run_commit"
+      },
+      {
+        "from": "mpp_executor",
+        "to": "artifact_store",
+        "edge_type": "artifact_write",
+        "artifact": "execution_result"
+      },
+      {
+        "from": "mpp_executor",
+        "to": "commit_system",
+        "edge_type": "commit_write",
+        "artifact": "execution_commit"
+      },
+      {
+        "from": "artifact_graph_index_engine",
+        "to": "artifact_store",
+        "edge_type": "artifact_write",
+        "artifact": "graph_index"
+      },
+      {
+        "from": "capability_graph_engine",
+        "to": "artifact_store",
+        "edge_type": "artifact_write",
+        "artifact": "capability_graph"
+      }
+    ]
+  }
+}

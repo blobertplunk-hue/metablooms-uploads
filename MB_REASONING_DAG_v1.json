@@ -1,0 +1,382 @@
+{
+  "dag_id": "dag.6874eca6b3a7",
+  "edge_count": 20,
+  "edges": [
+    {
+      "from": "phase.intent_analysis.ce9027b73823",
+      "label": "",
+      "relation": "depends_on",
+      "to": "phase.task_decomposition.a218839f47db"
+    },
+    {
+      "from": "phase.task_decomposition.a218839f47db",
+      "label": "",
+      "relation": "depends_on",
+      "to": "phase.architecture_planning.eb199b46661d"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "depends_on",
+      "to": "phase.multi_path_reasoning.3a22a664eb4b"
+    },
+    {
+      "from": "phase.multi_path_reasoning.3a22a664eb4b",
+      "label": "",
+      "relation": "depends_on",
+      "to": "phase.critic_review.73c893148a36"
+    },
+    {
+      "from": "phase.critic_review.73c893148a36",
+      "label": "",
+      "relation": "depends_on",
+      "to": "phase.execution_plan.650a67b80333"
+    },
+    {
+      "from": "phase.intent_analysis.ce9027b73823",
+      "label": "",
+      "relation": "contains",
+      "to": "r1.intent.3142d4bf26b4"
+    },
+    {
+      "from": "r1.intent.3142d4bf26b4",
+      "label": "",
+      "relation": "derived_from",
+      "to": "r2.subtask.2a5d031975e9"
+    },
+    {
+      "from": "phase.task_decomposition.a218839f47db",
+      "label": "",
+      "relation": "contains",
+      "to": "r2.subtask.2a5d031975e9"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "contains",
+      "to": "r3.constraint.b862f6d906ba"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "contains",
+      "to": "r3.constraint.473c0420ab79"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "contains",
+      "to": "r3.constraint.167ce74169ee"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "contains",
+      "to": "r3.constraint.4f9b37488fc2"
+    },
+    {
+      "from": "phase.architecture_planning.eb199b46661d",
+      "label": "",
+      "relation": "contains",
+      "to": "r3.constraint.adee463bc730"
+    },
+    {
+      "from": "r1.intent.3142d4bf26b4",
+      "label": "",
+      "relation": "derived_from",
+      "to": "r4.option.559aead08264"
+    },
+    {
+      "from": "phase.multi_path_reasoning.3a22a664eb4b",
+      "label": "",
+      "relation": "contains",
+      "to": "r4.option.559aead08264"
+    },
+    {
+      "from": "r4.option.559aead08264",
+      "label": "",
+      "relation": "derived_from",
+      "to": "r4.risk.4249f7564fe2"
+    },
+    {
+      "from": "r5.eval.08156779938d",
+      "label": "",
+      "relation": "evaluates",
+      "to": "r4.option.559aead08264"
+    },
+    {
+      "from": "phase.critic_review.73c893148a36",
+      "label": "",
+      "relation": "contains",
+      "to": "r5.eval.08156779938d"
+    },
+    {
+      "from": "phase.execution_plan.650a67b80333",
+      "label": "",
+      "relation": "contains",
+      "to": "r6.plan.38933a9a3195"
+    },
+    {
+      "from": "r4.option.559aead08264",
+      "label": "",
+      "relation": "selects",
+      "to": "r6.plan.38933a9a3195"
+    }
+  ],
+  "generated_utc": "2026-03-07T16:34:53.315836+00:00",
+  "integrity_ok": true,
+  "metrics": {
+    "branch_waste_ratio": 0.0,
+    "constraint_count": 8,
+    "critic_fail_findings": 0,
+    "critic_warn_findings": 0,
+    "decomposition_depth": 1,
+    "edge_count": 20,
+    "eliminated_count": 0,
+    "missing_phase_count": 0,
+    "node_count": 17,
+    "option_count": 1,
+    "surviving_count": 1
+  },
+  "missing_phases": [],
+  "node_count": 17,
+  "nodes": [
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R1_intent_analysis"
+      },
+      "label": "R1_intent_analysis",
+      "node_id": "phase.intent_analysis.ce9027b73823",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R1_intent_analysis"
+    },
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R2_task_decomposition"
+      },
+      "label": "R2_task_decomposition",
+      "node_id": "phase.task_decomposition.a218839f47db",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R2_task_decomposition"
+    },
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R3_architecture_planning"
+      },
+      "label": "R3_architecture_planning",
+      "node_id": "phase.architecture_planning.eb199b46661d",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R4_multi_path_reasoning"
+      },
+      "label": "R4_multi_path_reasoning",
+      "node_id": "phase.multi_path_reasoning.3a22a664eb4b",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R4_multi_path_reasoning"
+    },
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R5_critic_review"
+      },
+      "label": "R5_critic_review",
+      "node_id": "phase.critic_review.73c893148a36",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R5_critic_review"
+    },
+    {
+      "content": {
+        "artifact_present": true,
+        "phase": "R6_execution_plan"
+      },
+      "label": "R6_execution_plan",
+      "node_id": "phase.execution_plan.650a67b80333",
+      "node_type": "phase_summary",
+      "phase": "phase_summary",
+      "phase_label": "R6_execution_plan"
+    },
+    {
+      "content": {
+        "component": "run_egg_juicer",
+        "creates_state": true,
+        "intent": "run_egg_juicer",
+        "layer": "runtime"
+      },
+      "label": "intent:run_egg_juicer",
+      "node_id": "r1.intent.3142d4bf26b4",
+      "node_type": "intent",
+      "phase": "intent",
+      "phase_label": "R1_intent_analysis"
+    },
+    {
+      "content": {
+        "dependencies": [],
+        "description": "run_egg_juicer",
+        "id": "T1"
+      },
+      "label": "run_egg_juicer",
+      "node_id": "r2.subtask.2a5d031975e9",
+      "node_type": "decomposition",
+      "phase": "decomposition",
+      "phase_label": "R2_task_decomposition"
+    },
+    {
+      "content": {
+        "constraint": "WRITE_PATH",
+        "kernel_path_preserved": true,
+        "layer": "runtime"
+      },
+      "label": "constraint:WRITE_PATH",
+      "node_id": "r3.constraint.b862f6d906ba",
+      "node_type": "constraint",
+      "phase": "constraint",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "constraint": "FAIL_CLOSED",
+        "kernel_path_preserved": true,
+        "layer": "runtime"
+      },
+      "label": "constraint:FAIL_CLOSED",
+      "node_id": "r3.constraint.473c0420ab79",
+      "node_type": "constraint",
+      "phase": "constraint",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "constraint": "NO_SILENT_STATE",
+        "kernel_path_preserved": true,
+        "layer": "runtime"
+      },
+      "label": "constraint:NO_SILENT_STATE",
+      "node_id": "r3.constraint.167ce74169ee",
+      "node_type": "constraint",
+      "phase": "constraint",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "constraint": "KERNEL_PATH",
+        "kernel_path_preserved": true,
+        "layer": "runtime"
+      },
+      "label": "constraint:KERNEL_PATH",
+      "node_id": "r3.constraint.4f9b37488fc2",
+      "node_type": "constraint",
+      "phase": "constraint",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "constraint": "IMPORT_PLACEMENT",
+        "kernel_path_preserved": true,
+        "layer": "runtime"
+      },
+      "label": "constraint:IMPORT_PLACEMENT",
+      "node_id": "r3.constraint.adee463bc730",
+      "node_type": "constraint",
+      "phase": "constraint",
+      "phase_label": "R3_architecture_planning"
+    },
+    {
+      "content": {
+        "components_touched": [
+          "capability_resolver",
+          "pipeline_planner",
+          "governance_compiler",
+          "kernel_mpp_executor",
+          "artifact_store",
+          "commit_system"
+        ],
+        "description": "Execute intent 'run_egg_juicer' through the kernel pipeline: capability_resolver \u2192 pipeline_planner \u2192 governance_compile",
+        "option_id": "A",
+        "primary_risk": "None \u2014 canonical kernel path"
+      },
+      "label": "option:A",
+      "node_id": "r4.option.559aead08264",
+      "node_type": "option",
+      "phase": "option",
+      "phase_label": "R4_multi_path_reasoning"
+    },
+    {
+      "content": {
+        "option_id": "A",
+        "risk": "None \u2014 canonical kernel path"
+      },
+      "label": "risk:None \u2014 canonical kernel path",
+      "node_id": "r4.risk.4249f7564fe2",
+      "node_type": "risk",
+      "phase": "risk",
+      "phase_label": "R4_multi_path_reasoning"
+    },
+    {
+      "content": {
+        "constraint_count": 8,
+        "eliminated": false,
+        "elimination_reason": "",
+        "option_id": "A"
+      },
+      "label": "eval:A:SURVIVED",
+      "node_id": "r5.eval.08156779938d",
+      "node_type": "evaluation",
+      "phase": "evaluation",
+      "phase_label": "R5_critic_review"
+    },
+    {
+      "content": {
+        "approach_description": "Execute intent 'run_egg_juicer' through the kernel pipeline: capability_resolver \u2192 pipeline_planner \u2192 governance_compile",
+        "components_touched": [
+          "capability_resolver",
+          "pipeline_planner",
+          "governance_compiler",
+          "kernel_mpp_executor",
+          "artifact_store",
+          "commit_system"
+        ],
+        "creates_state": true,
+        "execution_approved": true,
+        "frozen_call_sequence_preserved": [
+          "capability_resolver",
+          "pipeline_planner",
+          "governance_compiler",
+          "kernel_mpp_executor",
+          "artifact_store",
+          "commit_system"
+        ],
+        "selected_approach": "A",
+        "warn_items": [],
+        "write_path": "artifact_store.store() \u2192 commit_system.commit()"
+      },
+      "label": "plan:option_A",
+      "node_id": "r6.plan.38933a9a3195",
+      "node_type": "execution_plan",
+      "phase": "execution_plan",
+      "phase_label": "R6_execution_plan"
+    }
+  ],
+  "phase_order": [
+    "R1_intent_analysis",
+    "R2_task_decomposition",
+    "R3_architecture_planning",
+    "R4_multi_path_reasoning",
+    "R5_critic_review",
+    "R6_execution_plan"
+  ],
+  "schema": "MB-REASONING-DAG-1.0",
+  "selected_plan_node": "r6.plan.38933a9a3195",
+  "source_intent": "run_egg_juicer"
+}

@@ -1,0 +1,25 @@
+{
+  "patch_id": "PATCH-EX-NO-ARTIFACTS-3709-3709a232",
+  "source_reflection_run_id": "3709a23225d7fefcf31bb128e3f8a7d9ca30ff9b40a2f470f435c6307a43b483",
+  "source_proposal_id": "EX-NO-ARTIFACTS-3709a232",
+  "patch_type": "engine_registration",
+  "target_component": "kernel_mpp_executor",
+  "severity": "HIGH",
+  "observation": "Execution completed but produced no artifacts in artifact_store.",
+  "proposed_change": {
+    "engine": "kernel_mpp_executor",
+    "intent": "run_egg_juicer",
+    "registration_site": "build_kernel_context(engine_map={...})",
+    "note": "Caller must provide a callable that matches the engine's contract."
+  },
+  "validation_required": true,
+  "freeze_required": false,
+  "requires_human_approval": true,
+  "evidence": [
+    "intent=run_egg_juicer",
+    "status=partial"
+  ],
+  "status": "VALIDATED",
+  "validation_result": "PASS",
+  "validation_detail": "All levels passed. No freeze impact. Human approval required: True."
+}

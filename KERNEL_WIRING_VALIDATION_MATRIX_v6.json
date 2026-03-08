@@ -1,0 +1,50 @@
+{
+  "schema": "MB-WIRING-MATRIX-V6-1.0",
+  "version": "v6",
+  "timestamp_utc": "2026-03-07T15:41:18.014920+00:00",
+  "pipeline_version": "MB-ORCHESTRATOR-WIRED-1.1",
+  "reasoning_stage": "MB-MPP-REASONING wired between pipeline_planner and governance_compiler",
+  "REQUIRE_REASONING": true,
+  "verification_method": "live_execution",
+  "orchestrator_hash": "sha256:bd94d18552668a30cad7f3e8711a4b79a33e2a20008d974788d5ad958448ef02",
+  "reasoning_engine_hash": "sha256:4f082b2b9dc5d06a3a67cc333f30ed12eda74e3298276d56f564fcc347417d55",
+  "execution_rows": [
+    {
+      "intent": "run_egg_juicer on input",
+      "status": "partial",
+      "reasoning_present": true,
+      "reasoning_artifacts": 6,
+      "reasoning_committed": true,
+      "exec_status_ok": true
+    },
+    {
+      "intent": "replay pack requested",
+      "status": "partial",
+      "reasoning_present": true,
+      "reasoning_artifacts": 6,
+      "reasoning_committed": true,
+      "exec_status_ok": true
+    },
+    {
+      "intent": "dashboard status",
+      "status": "partial",
+      "reasoning_present": true,
+      "reasoning_artifacts": 6,
+      "reasoning_committed": true,
+      "exec_status_ok": true
+    }
+  ],
+  "gate_test": {
+    "intent": "ghost_write_attempt (direct engine gate test)",
+    "valid": false,
+    "block_reason": "R5 critic_review: all approaches eliminated by hard constraint failures. No valid implementation path found.",
+    "gate_correct": true
+  },
+  "commit_chain": {
+    "total_commits": 4,
+    "violations": 0,
+    "chain_ok": true
+  },
+  "determinism_hash": "sha256:f59cb377de43b5844e37479fd5f7d58634fe52e619475644e8cf04ff77d283a9",
+  "notes": "Matrix v6 validates the wired reasoning stage. reasoning_present=True on all execution rows confirms MB-MPP-REASONING runs before governance. gate_correct=True confirms fail-closed gate. Supersedes matrix v5 (pre-reasoning-wiring)."
+}

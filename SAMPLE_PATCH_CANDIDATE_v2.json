@@ -1,0 +1,33 @@
+{
+  "patch_id": "PATCH-EX-NO-ARTIFACTS-28e6-28e6525a",
+  "source_reflection_run_id": "28e6525a6635dcc126bac40f8e4f8f1db2918c0d5ff68fed6ba01fa903da8b73",
+  "source_proposal_id": "EX-NO-ARTIFACTS-28e6525a",
+  "patch_type": "engine_registration",
+  "target_component": "kernel_mpp_executor",
+  "severity": "HIGH",
+  "observation": "Execution completed but produced no artifacts in artifact_store.",
+  "proposed_change": {
+    "engine": "kernel_mpp_executor",
+    "intent": "run_egg_juicer",
+    "registration_site": "build_kernel_context(engine_map={...})",
+    "note": "Caller must provide a callable that matches the engine's contract.",
+    "implementation_template": "# In your application bootstrap:\ndef kernel_mpp_executor_callable(context):\n    # Implement engine logic here\n    return {\"status\": \"ok\", \"engine\": \"kernel_mpp_executor\"}\n\nctx = build_kernel_context(\n    data_root=your_data_root,\n    engine_map={\"kernel_mpp_executor\": kernel_mpp_executor_callable}\n)"
+  },
+  "validation_required": true,
+  "freeze_required": false,
+  "requires_human_approval": true,
+  "evidence": [
+    "intent=run_egg_juicer",
+    "status=partial"
+  ],
+  "status": "VALIDATED",
+  "validation_result": "PASS",
+  "validation_detail": "All levels passed. No freeze impact. Human approval required: True.",
+  "implementation_template": "# In your application bootstrap:\ndef kernel_mpp_executor_callable(context):\n    # Implement engine logic here\n    return {\"status\": \"ok\", \"engine\": \"kernel_mpp_executor\"}\n\nctx = build_kernel_context(\n    data_root=your_data_root,\n    engine_map={\"kernel_mpp_executor\": kernel_mpp_executor_callable}\n)",
+  "replay_proof": {
+    "simulation_ran": true,
+    "simulation_result": "PASS",
+    "simulation_detail": "All levels passed. No freeze impact. Human approval required: True.",
+    "note": "Stub engine registered in isolated temp kernel. Real implementation required before production use."
+  }
+}
