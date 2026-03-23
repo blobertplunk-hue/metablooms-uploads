@@ -596,6 +596,14 @@ if [[ "${#WARNINGS[@]}" -gt 0 ]]; then
   for w in "${WARNINGS[@]}"; do echo "    - ${w}"; done
   echo ""
 fi
+REMOTE_URL="$(git -C "${REPO_DIR}" remote get-url origin 2>/dev/null || echo '<repo-url>')"
+echo "  To use on a fresh machine:"
+echo "    git clone ${REMOTE_URL}"
+echo "    cd metablooms-uploads"
+echo "    ./setup-claude.sh                # idempotent"
+echo "    ./setup-claude.sh --interactive  # prompts for Slack/Sentry URLs"
+echo "    ./setup-claude.sh --force        # re-run everything"
+echo ""
 echo "  Next steps:"
 echo "    1. Set ANTHROPIC_API_KEY in your shell profile"
 echo "    2. Run: claude  (to start a session)"
