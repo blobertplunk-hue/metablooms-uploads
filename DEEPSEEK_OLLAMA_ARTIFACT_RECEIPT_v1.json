@@ -1,0 +1,81 @@
+{
+  "artifact_id": "DEEPSEEK-OLLAMA-SETUP-Ni2NO-v1",
+  "artifact_type": "powershell_execution_pipeline",
+  "artifact_file": "DEEPSEEK_OLLAMA_SETUP_PLAN_v1.ps1",
+  "sha256": "sha256:7611616b3f842812ef7a114b09a9c317751b53c0f4bcf1c20d0ac8f12fd78eb7",
+  "created_at": "2026-03-23T00:00:00Z",
+  "session_id": "Ni2NO",
+  "author": "Claude (MetaBlooms Claude Code Agent)",
+  "metablooms_version": "KB-20260307-v4",
+  "target_platform": "Windows 11, PowerShell 7+",
+  "execution_mode": "CPU-only, local-first, no API keys required",
+  "model_default": "deepseek-r1:7b",
+  "model_lightweight": "deepseek-r1:1.5b",
+  "stage_map": {
+    "stage_1": {
+      "name": "Install",
+      "command": "winget install --id Ollama.Ollama --silent --accept-package-agreements --accept-source-agreements",
+      "verification": "Get-Command ollama",
+      "failure_modes": ["winget_not_available", "download_failure", "already_installed_idempotent"],
+      "remediation": "Add-AppxPackage bootstrap or retry with exponential backoff"
+    },
+    "stage_2": {
+      "name": "Verify Runtime",
+      "command": "ollama --version; Start-Job { ollama serve }",
+      "verification": "Test-NetConnection localhost -Port 11434",
+      "failure_modes": ["port_conflict", "binary_not_in_path", "server_crash"],
+      "remediation": "netstat -ano | findstr 11434; kill conflicting PID; reload PATH"
+    },
+    "stage_3": {
+      "name": "Validate API",
+      "command": "Invoke-RestMethod http://localhost:11434/api/tags",
+      "verification": "response.models key present; HTTP 200",
+      "failure_modes": ["api_timeout", "server_not_started", "unexpected_json_schema"],
+      "remediation": "Wait-OllamaReady loop; restart ollama serve"
+    },
+    "stage_4": {
+      "name": "Execute Model",
+      "command": "ollama pull deepseek-r1:7b; ollama run deepseek-r1:7b <prompt>",
+      "verification": "Non-empty string output from model",
+      "failure_modes": ["insufficient_disk", "download_interrupted", "oom_cpu", "empty_output"],
+      "remediation": "Use deepseek-r1:1.5b; free disk space; retry pull"
+    },
+    "stage_5": {
+      "name": "Benchmark",
+      "command": "Stopwatch + ollama run (timed)",
+      "verification": "tok/sec > 0",
+      "failure_modes": ["timeout", "no_output", "zero_elapsed"],
+      "remediation": "Increase TimeoutSec; use 1.5b model; check CPU thermal throttling"
+    },
+    "stage_6": {
+      "name": "Scale",
+      "command": "Start-Job x3 -> POST /api/generate (stream:false)",
+      "verification": "All 3 jobs return non-empty response",
+      "failure_modes": ["job_timeout", "empty_response", "port_saturation"],
+      "remediation": "Reduce ConcurrentJobs; increase TimeoutSec per job"
+    },
+    "stage_7": {
+      "name": "Integrate",
+      "command": "Invoke-DeepSeek function definition + test call",
+      "verification": "Function returns non-empty response string",
+      "failure_modes": ["empty_wrapper_response", "port_mismatch"],
+      "remediation": "Verify -Port matches OllamaPort; ensure model is pulled"
+    }
+  },
+  "governance": {
+    "fail_closed": true,
+    "deterministic": true,
+    "independently_testable_stages": true,
+    "no_silent_failure": true,
+    "rollback_paths_documented": true
+  },
+  "validation_status": "READY_FOR_EXECUTION",
+  "validation_result": "PASS",
+  "validation_detail": "Artifact authored, SHA256 verified, all 7 stages documented with failure modes and remediation paths. No freeze impact. Human approval required before production use.",
+  "requires_human_approval": true,
+  "freeze_required": false,
+  "replay_proof": {
+    "simulation_ran": false,
+    "note": "Full simulation requires Windows 11 + PowerShell 7 environment. Script validated for syntax and structure. Real execution required before production sign-off."
+  }
+}
