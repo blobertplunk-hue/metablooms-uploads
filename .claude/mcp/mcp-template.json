@@ -1,0 +1,25 @@
+{
+  "_comment": "MCP server configuration template. Copy this to .mcp.json in your project root and replace PLACEHOLDER values. Keep .mcp.json in .gitignore — it contains secrets.",
+  "_instructions": {
+    "slack": "Replace SLACK_WEBHOOK_URL_PLACEHOLDER with your Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks)",
+    "sentry": "Replace SENTRY_DSN_PLACEHOLDER with your Sentry DSN (found under Project Settings → Client Keys in your Sentry dashboard)"
+  },
+  "mcpServers": {
+    "slack": {
+      "type": "http",
+      "url": "SLACK_WEBHOOK_URL_PLACEHOLDER",
+      "description": "Slack Incoming Webhook for notifications. Replace URL with your webhook endpoint.",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "sentry": {
+      "type": "http",
+      "url": "SENTRY_DSN_PLACEHOLDER",
+      "description": "Sentry DSN for error tracking. Replace URL with your project DSN.",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+}
