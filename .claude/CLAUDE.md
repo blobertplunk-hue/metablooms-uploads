@@ -1,80 +1,165 @@
 # Project Memory — MetaBlooms Uploads
 
-## Boris Cherny Core Rules
+---
 
-- **Parallel agents:** Run independent subtasks in parallel; never serialize what can be parallelized.
-- **Plan-first:** Use plan mode first (`/plan`). Only switch to auto-accept for well-scoped execution.
-- **Verification loops:** After every change, tests and linters must pass before committing.
-- **Self-updating:** When a mistake is discovered (user correction, failed command, wrong output, any error), immediately run `bash scripts/log-mistake.sh "what went wrong → what the fix was"` (Linux/macOS) or `pwsh -File scripts/log-mistake.ps1 "..."` (Windows). This is non-negotiable. The Stop hook also fires `/mistake` automatically at session end. Never rely on memory alone — the log is the record.
-- **Fail-closed:** Never silently continue on error. Abort with a clear message.
-- **Evidence over claims:** A receipt or test output proves execution; a comment or docstring does not.
+## LAYER 0 — BTS (Behind The Scenes) — MANDATORY, PRE-OUTPUT
 
-## Repository Context
+**BTS is not optional. Zero decisions recorded = protocol violation.**
 
-This is the **MetaBlooms OS** artifact repository — a governed, deterministic, artifact-first execution system.
+BTS is a live, enforced decision trace. Every meaningful choice must be recorded
+BEFORE output is produced. If BTS is not written, do not respond.
 
-Key constraints:
+### What BTS captures
 
-- Append-only commit chain: never amend published commits
-- Every write must be tracked: `artifact_store.store() → read-back → hash-verified → receipt → commit_system.commit()`
-- All artifacts include a SHA256 receipt in a paired `*_RECEIPT_*.json` file
-- Freeze state documented in `KERNEL_ADOPTION_FREEZE_v4-1.json` — do not modify frozen components
+A decision = multiple options exist → one selected → others rejected → criteria used.
 
-## Commands
-
-```bash
-# Verify git status
-git status
-
-# Validate JSON artifacts
-python3 -m json.tool <file>.json
-
-# Compute SHA256 of an artifact
-sha256sum <file>
-
-# Run prettier formatter
-prettier --write .
+```json
+{
+  "id": "D-001",
+  "level": "prompt|task|micro",
+  "context": "what choice was being made",
+  "options": [
+    {
+      "name": "A",
+      "pros": ["..."],
+      "cons": ["..."],
+      "selected": false,
+      "reason": "..."
+    },
+    {
+      "name": "B",
+      "pros": ["..."],
+      "cons": ["..."],
+      "selected": true,
+      "reason": "..."
+    }
+  ],
+  "selected": "B",
+  "criteria": ["clarity", "maintainability"],
+  "confidence": 0.85
+}
 ```
 
-## Coding Standards
+### Three levels — all must run
 
-- JSON artifacts: 2-space indent, keys sorted by convention
-- Bash scripts: `set -euo pipefail`, shellcheck-clean
-- PowerShell scripts: `#Requires -Version 7.0`, `$ErrorActionPreference = 'Stop'`
-- No silent failures; every error path must `throw` or `exit 1` with a message
+| Level      | Scope            | Examples                                      |
+| ---------- | ---------------- | --------------------------------------------- |
+| **Prompt** | Every prompt     | How to interpret it, response format, depth   |
+| **Task**   | Structured work  | Which protocol, which tools, which stages     |
+| **Micro**  | Inside execution | Algorithm, pattern, variable names, structure |
 
-## Aakash Gupta — PRD Writer
+### How to record
 
-Use `/prd` to generate a structured Product Requirements Document:
+```bash
+bash scripts/bts-record.sh '{"level":"prompt","context":"...","options":[...],"selected":"...","criteria":["..."],"confidence":0.9}'
+```
 
-- **Problem:** What is broken or missing?
-- **Users:** Who is affected?
-- **Goals:** Measurable outcomes
-- **Non-goals:** Explicit exclusions
-- **Success metrics:** How will we know we succeeded?
-- **Milestones:** Ordered delivery steps
+Or use `/bts` to batch-record all decisions for the current turn.
 
-## Jacob Bartlett — Staff Engineer Review
+### Session lifecycle (handled by hooks)
 
-Before finalizing any plan, spawn the `plan-review` subagent to critique the approach from a
-Staff Engineer perspective. It will challenge:
+- **SessionStart** → `bash scripts/bts-init.sh` (creates `_bts/sessions/SESSION_<id>.json`)
+- **Stop** → `bash scripts/bts-finalize.sh` (marks session complete, clears `.current`)
+- Session files live in `_bts/sessions/` — never delete them; they are the decision history.
 
-- Scalability assumptions
-- Security surface area
-- Maintainability and coupling
-- Missing edge cases
-- Simpler alternatives
+---
+
+## LAYER 1 — Core Execution Rules (Boris Cherny)
+
+- **Parallel agents:** Run independent subtasks in parallel. Never serialize what can be parallelized.
+- **Plan-first:** Use plan mode (`/plan`) before any significant change. Only switch to auto-accept for well-scoped execution. Spawn `plan-review` subagent before finalizing.
+- **Verification loops:** After every change, tests and linters must pass before committing. Use `/verify`.
+- **Fail-closed:** Never silently continue on error. Abort with a clear message and exit 1.
+- **Evidence over claims:** A receipt, test output, or `sha256sum` proves execution. A comment or docstring does not.
+- **Mistake logging:** When any mistake is discovered (user correction, failed command, wrong output), immediately run `bash scripts/log-mistake.sh "what went wrong → what the fix was"`. Non-negotiable. See Layer 4.
+
+---
+
+## LAYER 2 — Repository Constraints
+
+This is the **MetaBlooms OS** artifact repository — governed, deterministic, artifact-first.
+
+- Append-only commit chain: **never amend published commits**
+- Every write: `artifact_store.store() → read-back → hash-verified → receipt → commit`
+- All artifacts include a SHA256 receipt in a paired `*_RECEIPT_*.json` file
+- Freeze state in `KERNEL_ADOPTION_FREEZE_v4-1.json` — do not modify frozen components
+
+```bash
+git status                          # check state
+python3 -m json.tool <file>.json    # validate JSON
+sha256sum <file>                    # compute receipt hash
+prettier --write .                  # format
+```
+
+---
+
+## LAYER 3 — Coding Standards
+
+- JSON: 2-space indent, keys sorted by convention
+- Bash: `set -euo pipefail`, shellcheck-clean, no silent failures
+- PowerShell: `#Requires -Version 7.0`, `$ErrorActionPreference = 'Stop'`
+- Every error path must `throw` or `exit 1` with a message
+- File writes >300 lines: break into sections, never one shot
+- One-shot commands: must be fully self-contained — never reference a file the user doesn't have
+
+---
+
+## LAYER 4 — Platform Awareness (learned this session)
+
+**Before writing any script or command, detect the user's OS.**
+
+| Rule                          | Detail                                                                                                   |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Never assume bash             | Windows users need `.ps1`. Always provide both or ask.                                                   |
+| Never show localhost URLs     | `127.0.0.1` / `local_proxy` URLs are sandbox-internal only. Never present to user as usable.             |
+| Always read actual remote URL | Run `git remote get-url origin` before printing any clone command.                                       |
+| `.\` required on Windows      | PowerShell requires `.\script.ps1`, not `script.ps1`.                                                    |
+| One-shot = inline only        | A one-shot copy-paste must contain everything. No file references.                                       |
+| npm may not exist             | On Windows, guard with `winget install OpenJS.NodeJS.LTS` if `npm` not found. Refresh `$env:PATH` after. |
+
+---
+
+## LAYER 5 — Specialist Protocols
+
+### Aakash Gupta — PRD Writer
+
+Use `/prd "[description]"` to generate:
+Problem · Users · Goals · Non-goals · Success metrics · Milestones
+
+### Jacob Bartlett — Staff Engineer Review
+
+Before finalizing any plan, spawn `plan-review` subagent. It challenges:
+scalability, security, maintainability, edge cases, simpler alternatives.
+
+---
+
+## LAYER 6 — Available Commands & Agents
+
+| Command           | Purpose                                      |
+| ----------------- | -------------------------------------------- |
+| `/bts`            | Record BTS decisions (mandatory pre-output)  |
+| `/mistake "desc"` | Log a mistake to the Mistake Log             |
+| `/verify`         | Run all checks — JSON, lint, tests, receipts |
+| `/prd "desc"`     | Generate structured PRD                      |
+| `/commit-push-pr` | Stage → commit → push → open PR              |
+
+| Agent             | Purpose                                    |
+| ----------------- | ------------------------------------------ |
+| `plan-review`     | Staff Engineer critique before execution   |
+| `code-simplifier` | Simplify and refactor after implementation |
+| `verify-app`      | Full verification suite                    |
+
+---
 
 ## Mistake Log
 
-<!-- Claude: append entries here when an error is found and corrected. Format:
-     - YYYY-MM-DD: [what went wrong] → [what the fix was]
--->
+<!-- Format: - YYYY-MM-DD: [what went wrong] → [what the fix was] -->
 
-- 2026-03-23: Timed out writing a large file in one shot → Break large file writes into sections; never attempt to write >300 lines in a single Write tool call.
-- 2026-03-23: Printed `git clone <repo>` placeholder instead of the actual repo URL → Always read `git remote get-url origin` first and substitute the real URL before showing any clone command to the user.
-- 2026-03-23: Showed the local proxy URL (`http://local_proxy@127.0.0.1:37017/...`) as if it were usable from outside the sandbox → That URL only works inside the Claude Code server. Never present it to the user as a clone URL. If no public URL exists, say so explicitly.
-- 2026-03-23: Delivered a `.sh` bash script to a Windows user without a PowerShell equivalent → Always ask or detect the user's OS before writing setup scripts. Windows users need `.ps1`; never assume bash.
-- 2026-03-23: Gave `pwsh -File setup-claude.ps1` (no path prefix) → PowerShell requires `.\` for local scripts: always use `pwsh -File .\setup-claude.ps1`.
-- 2026-03-23: After being asked for a "one-shot copy-paste", still delivered a command that referenced a `.ps1` file the user didn't have locally → A one-shot means fully self-contained inline code. Never reference an external file in a one-shot command.
-- 2026-03-23: One-shot assumed `npm` was installed and crashed with "npm not found" → Always guard against missing prerequisites. On Windows 11, use `winget install OpenJS.NodeJS.LTS` to install Node.js if `npm` is not found, then refresh `$env:PATH` before continuing.
+- 2026-03-23: Timed out writing a large file in one shot → Break file writes into sections; never >300 lines in a single Write tool call.
+- 2026-03-23: Printed `git clone <repo>` placeholder → Always run `git remote get-url origin` first and substitute the real URL.
+- 2026-03-23: Showed local proxy URL (`127.0.0.1:37017`) as if usable from outside the sandbox → That URL is sandbox-internal only. Never present it to the user. If no public URL exists, say so.
+- 2026-03-23: Delivered `.sh` script to a Windows user → Always detect OS before writing scripts. Windows needs `.ps1`.
+- 2026-03-23: `pwsh -File setup-claude.ps1` missing `.\` prefix → PowerShell always requires `.\` for local script paths.
+- 2026-03-23: "One-shot" referenced an external file the user didn't have → A one-shot must be fully self-contained inline code. No file references.
+- 2026-03-23: One-shot assumed `npm` was installed → Always guard prerequisites. On Windows 11 use `winget install OpenJS.NodeJS.LTS`, then refresh `$env:PATH`.
+- 2026-03-23: Did not implement BTS when first asked → BTS must be implemented as Layer 0 (scripts + hooks + CLAUDE.md) not just described. Evidence over claims.

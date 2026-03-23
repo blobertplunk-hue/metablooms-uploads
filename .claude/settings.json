@@ -7,13 +7,25 @@
       "Bash(node:*)",
       "Bash(prettier:*)",
       "Bash(python3:*)",
-      "Bash(python3 -m json.tool:*)",
       "Bash(sha256sum:*)",
       "Bash(shellcheck:*)",
+      "Bash(bash scripts/bts-init.sh:*)",
+      "Bash(bash scripts/bts-record.sh:*)",
+      "Bash(bash scripts/bts-finalize.sh:*)",
       "Bash(bash scripts/log-mistake.sh:*)"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/bts-init.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -29,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'if [ \"${CLAUDE_TOOL_EXIT_CODE:-0}\" != \"0\" ]; then bash scripts/log-mistake.sh \"Bash command failed (exit ${CLAUDE_TOOL_EXIT_CODE}): ${CLAUDE_TOOL_INPUT}\" 2>/dev/null || true; fi'"
+            "command": "bash -c 'code=\"${CLAUDE_TOOL_EXIT_CODE:-0}\"; if [ \"$code\" != \"0\" ]; then bash scripts/log-mistake.sh \"Bash exited $code: ${CLAUDE_TOOL_INPUT:-unknown}\" 2>/dev/null || true; fi'"
           }
         ]
       }
@@ -39,7 +51,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/log-mistake.sh \"\" 2>/dev/null || true"
+            "command": "bash scripts/bts-finalize.sh 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then echo \"[stop-hook] Uncommitted changes detected. Commit and push before ending session.\"; fi'"
           }
         ]
       }
