@@ -1,0 +1,105 @@
+{
+  "session_id": "SESSION_20260323_201252",
+  "started_utc": "2026-03-23T20:12:52.821328+00:00",
+  "status": "complete",
+  "decisions": [
+    {
+      "level": "prompt",
+      "context": "How to interpret continue after partial execution \u2014 research agent hit rate limit, explore agent confirmed gapfinder/SIE/FIR/r12fi absent from repo",
+      "options": [
+        {
+          "name": "Ask for clarification",
+          "pros": ["avoids wrong assumption"],
+          "cons": ["wastes turn, context is clear enough"],
+          "selected": false,
+          "reason": "prior turn established full context"
+        },
+        {
+          "name": "Resume from where we stopped",
+          "pros": ["respects user intent, all context preserved"],
+          "cons": ["none"],
+          "selected": true,
+          "reason": "session context is complete; pick up at research stage"
+        }
+      ],
+      "selected": "Resume from where we stopped",
+      "criteria": ["continuity", "user intent"],
+      "confidence": 0.95,
+      "id": "D-001"
+    },
+    {
+      "level": "task",
+      "context": "Research approach for SIE-sandcrawler-SEE, FIR, r12fi \u2014 agent hit limits last turn",
+      "options": [
+        {
+          "name": "Spawn another agent",
+          "pros": ["isolated context"],
+          "cons": ["hit limits again"],
+          "selected": false,
+          "reason": "rate limits on subagents"
+        },
+        {
+          "name": "Use WebSearch directly in main context",
+          "pros": ["no agent overhead, immediate results"],
+          "cons": ["uses main context"],
+          "selected": true,
+          "reason": "agent hit rate limit; direct WebSearch is the fallback"
+        }
+      ],
+      "selected": "Use WebSearch directly in main context",
+      "criteria": ["reliability", "speed"],
+      "confidence": 0.92,
+      "id": "D-002"
+    },
+    {
+      "level": "micro",
+      "context": "Execution order for recursive task: fix gaps, find gapfinder, research, compare, use SIE pipeline with WebSearch replacing web.run, use FIR and r12fi",
+      "options": [
+        {
+          "name": "Linear sequential",
+          "pros": ["simple"],
+          "cons": ["slow, misses recursion intent"],
+          "selected": false,
+          "reason": "user said reorder recursively"
+        },
+        {
+          "name": "Recursive: research first \u2192 inform fix \u2192 compare \u2192 apply to repo",
+          "pros": ["each stage informs the next, mirrors recursive intent"],
+          "cons": ["slightly more complex"],
+          "selected": true,
+          "reason": "user explicitly said reorder and do recursively \u2014 research bootstraps the fix"
+        }
+      ],
+      "selected": "Recursive: research first \u2192 inform fix \u2192 compare \u2192 apply to repo",
+      "criteria": ["recursion", "bootstrap", "user intent"],
+      "confidence": 0.88,
+      "id": "D-003"
+    },
+    {
+      "level": "micro",
+      "context": "Mapping user terms to repo concepts \u2014 FIR, r12fi, SIE, sandcrawler",
+      "options": [
+        {
+          "name": "Treat as nonexistent and ask",
+          "pros": ["safe"],
+          "cons": ["wastes turn"],
+          "selected": false,
+          "reason": "enough context to infer"
+        },
+        {
+          "name": "Map FIR=RF1-RF4 reflector phases, r12fi=R1-R2 forward inference, SIE=intent_intake, sandcrawler=pipeline_planner",
+          "pros": ["grounded in actual repo code", "internally consistent"],
+          "cons": ["interpretive"],
+          "selected": true,
+          "reason": "phase_registry shows see/aca/mmd canonical; reflector has RF1-RF4; reasoning has R1-R6; these are the closest named concepts in the repo"
+        }
+      ],
+      "selected": "Map FIR=RF1-RF4 reflector phases, r12fi=R1-R2 forward inference, SIE=intent_intake, sandcrawler=pipeline_planner",
+      "criteria": ["evidence-based", "minimal hallucination"],
+      "confidence": 0.78,
+      "id": "D-004"
+    }
+  ],
+  "ended_utc": "2026-03-23T20:25:27.362346+00:00",
+  "decision_count": 4
+}
