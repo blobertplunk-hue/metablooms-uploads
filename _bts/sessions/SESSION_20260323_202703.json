@@ -1,0 +1,120 @@
+{
+  "session_id": "SESSION_20260323_202703",
+  "started_utc": "2026-03-23T20:27:03.832658+00:00",
+  "status": "complete",
+  "decisions": [
+    {
+      "level": "prompt",
+      "context": "Interpret: find other high-end Claude Code setups and compare to MetaBlooms",
+      "options": [
+        {
+          "name": "Narrow: only official Anthropic examples",
+          "pros": [
+            "authoritative"
+          ],
+          "cons": [
+            "too few, misses community innovation"
+          ],
+          "selected": false,
+          "reason": "user said high-end, implying best-in-class across the ecosystem"
+        },
+        {
+          "name": "Broad: community repos, blog posts, case studies, official docs",
+          "pros": [
+            "captures full landscape of advanced setups",
+            "better comparison surface"
+          ],
+          "cons": [
+            "more research needed"
+          ],
+          "selected": true,
+          "reason": "user wants genuine comparison \u2014 need breadth to find real peers"
+        }
+      ],
+      "selected": "Broad: community repos, blog posts, case studies, official docs",
+      "criteria": [
+        "coverage",
+        "relevance",
+        "comparison value"
+      ],
+      "confidence": 0.92,
+      "id": "D-001"
+    },
+    {
+      "level": "task",
+      "context": "How to find high-end Claude Code setups \u2014 what sources to search",
+      "options": [
+        {
+          "name": "Single broad search",
+          "pros": [
+            "fast"
+          ],
+          "cons": [
+            "misses specialized setups"
+          ],
+          "selected": false,
+          "reason": "high-end setups are scattered across different contexts"
+        },
+        {
+          "name": "Parallel targeted searches: CLAUDE.md patterns, hooks, MCP, agentic workflows, known power users",
+          "pros": [
+            "covers all vectors of advanced setup",
+            "parallel = fast"
+          ],
+          "cons": [
+            "more queries"
+          ],
+          "selected": true,
+          "reason": "high-end setups manifest differently \u2014 some are hook-heavy, some MCP-heavy, some CLAUDE.md-heavy; need all angles"
+        }
+      ],
+      "selected": "Parallel targeted searches: CLAUDE.md patterns, hooks, MCP, agentic workflows, known power users",
+      "criteria": [
+        "thoroughness",
+        "parallelism"
+      ],
+      "confidence": 0.9,
+      "id": "D-002"
+    },
+    {
+      "level": "micro",
+      "context": "Comparison format \u2014 how to structure MetaBlooms vs others",
+      "options": [
+        {
+          "name": "Prose narrative",
+          "pros": [
+            "readable"
+          ],
+          "cons": [
+            "hard to scan, buries key differentiators"
+          ],
+          "selected": false,
+          "reason": "comparison tables are more useful for this type of analysis"
+        },
+        {
+          "name": "Structured comparison table + per-setup deep dive + gap/lead analysis",
+          "pros": [
+            "scannable",
+            "surfaces exact feature deltas",
+            "actionable"
+          ],
+          "cons": [
+            "more work to produce"
+          ],
+          "selected": true,
+          "reason": "user needs to know exactly where MetaBlooms leads, lags, and is unique"
+        }
+      ],
+      "selected": "Structured comparison table + per-setup deep dive + gap/lead analysis",
+      "criteria": [
+        "clarity",
+        "actionability",
+        "precision"
+      ],
+      "confidence": 0.88,
+      "id": "D-003"
+    }
+  ],
+  "ended_utc": "2026-03-23T20:32:13.688905+00:00",
+  "decision_count": 3
+}
