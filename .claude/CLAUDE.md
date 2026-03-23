@@ -154,12 +154,3 @@ scalability, security, maintainability, edge cases, simpler alternatives.
 ## Mistake Log
 
 <!-- Format: - YYYY-MM-DD: [what went wrong] → [what the fix was] -->
-
-- 2026-03-23: Timed out writing a large file in one shot → Break file writes into sections; never >300 lines in a single Write tool call.
-- 2026-03-23: Printed `git clone <repo>` placeholder → Always run `git remote get-url origin` first and substitute the real URL.
-- 2026-03-23: Showed local proxy URL (`127.0.0.1:37017`) as if usable from outside the sandbox → That URL is sandbox-internal only. Never present it to the user. If no public URL exists, say so.
-- 2026-03-23: Delivered `.sh` script to a Windows user → Always detect OS before writing scripts. Windows needs `.ps1`.
-- 2026-03-23: `pwsh -File setup-claude.ps1` missing `.\` prefix → PowerShell always requires `.\` for local script paths.
-- 2026-03-23: "One-shot" referenced an external file the user didn't have → A one-shot must be fully self-contained inline code. No file references.
-- 2026-03-23: One-shot assumed `npm` was installed → Always guard prerequisites. On Windows 11 use `winget install OpenJS.NodeJS.LTS`, then refresh `$env:PATH`.
-- 2026-03-23: Did not implement BTS when first asked → BTS must be implemented as Layer 0 (scripts + hooks + CLAUDE.md) not just described. Evidence over claims.

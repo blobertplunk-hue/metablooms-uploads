@@ -12,10 +12,22 @@
       "Bash(bash scripts/bts-init.sh:*)",
       "Bash(bash scripts/bts-record.sh:*)",
       "Bash(bash scripts/bts-finalize.sh:*)",
+      "Bash(bash scripts/bts-gate.sh:*)",
+      "Bash(bash scripts/bts-stop-scan.sh:*)",
       "Bash(bash scripts/log-mistake.sh:*)"
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/bts-gate.sh"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
@@ -52,6 +64,14 @@
           {
             "type": "command",
             "command": "bash scripts/bts-finalize.sh 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/bts-stop-scan.sh 2>/dev/null || true"
           }
         ]
       },

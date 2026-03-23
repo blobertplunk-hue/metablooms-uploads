@@ -1,0 +1,151 @@
+{
+  "schema": "MB-GAP-DETECTOR-WIRING-1.0",
+  "component": "gap_detector",
+  "authority": "runtime_extension",
+  "produced_utc": "2026-03-23T00:00:00+00:00",
+
+  "pipeline_position": {
+    "after": "mmd",
+    "before": "verification",
+    "canonical_sequence": [
+      "SIE  → intent_intake (capability_resolver → pipeline_planner)",
+      "sandcrawler → pipeline_planner.build_plan()",
+      "SEE  → see phase (evidence collection — WebSearch replaces web.run)",
+      "ACA  → aca phase (assumption + context analysis)",
+      "MMD  → mmd phase (multi-modal decomposition into subtasks)",
+      "GAP  → gap_detector.detect() [THIS MODULE]",
+      "VFY  → verification phase",
+      "CMT  → commit phase"
+    ],
+    "note": "SIE-sandcrawler-SEE are the first three stages of the MetaBlooms pipeline. GAP replaces the implicit assumption that SEE+ACA+MMD are sufficient."
+  },
+
+  "inputs": {
+    "r12fi": {
+      "source": "reasoning_engine",
+      "phases": ["R1_intent_analysis", "R2_task_decomposition"],
+      "key": "r12fi",
+      "description": "First two reasoning phases. R1 declares intent; R2 decomposes to subtasks. Together they form the FORWARD INFERENCE baseline that the backward pass checks against.",
+      "required": false,
+      "fallback": "BP1 and BP2 degrade to INFO-level findings if absent"
+    },
+    "fir": {
+      "source": "reflector_engine",
+      "phases": [
+        "RF1_execution_analysis",
+        "RF2_reasoning_analysis",
+        "RF3_governance_analysis",
+        "RF4_improvement_proposals"
+      ],
+      "key": "fir",
+      "description": "Failure Inspection Report from the previous run. RF1-RF4 output. Used by BP5 to detect REPEAT gaps — the same gap appearing in two consecutive runs signals a systemic issue that evolution_engine should address.",
+      "required": false,
+      "fallback": "BP5 skipped if fir is absent or has no proposals"
+    },
+    "see_artifacts": {
+      "source": "see_phase",
+      "description": "Artifact IDs produced by the SEE evidence collection phase. In the SIE-sandcrawler-SEE pipeline, WebSearch results are committed as SEE artifacts.",
+      "required": false
+    },
+    "aca_artifacts": {
+      "source": "aca_phase",
+      "description": "Artifact IDs from the ACA assumption analysis phase.",
+      "required": false
+    },
+    "mmd_artifacts": {
+      "source": "mmd_phase",
+      "description": "Artifact IDs from the MMD multi-modal decomposition phase.",
+      "required": false
+    }
+  },
+
+  "backward_pass_phases": [
+    {
+      "id": "BP1",
+      "name": "bp1_intent_drift",
+      "inputs": ["r12fi.r1_intent", "r12fi.r2_decomposition"],
+      "method": "keyword_overlap_check",
+      "gap_category": "intent_drift",
+      "research_basis": "RT-ICA backward abduction: necessary conditions for outcome"
+    },
+    {
+      "id": "BP2",
+      "name": "bp2_evidence_completeness",
+      "inputs": ["r12fi.r2_decomposition.subtasks", "see_artifacts"],
+      "method": "subtask_to_evidence_mapping",
+      "gap_category": "missing_evidence",
+      "research_basis": "RT-ICA: compare necessary conditions against available evidence"
+    },
+    {
+      "id": "BP3",
+      "name": "bp3_assumption_resolution",
+      "inputs": ["aca_artifacts", "see_artifacts"],
+      "method": "assumption_evidence_delta",
+      "gap_category": "unresolved_assumption",
+      "research_basis": "Metacognitive monitoring: ACA assumptions must be grounded in SEE evidence"
+    },
+    {
+      "id": "BP4",
+      "name": "bp4_decomp_coverage",
+      "inputs": ["mmd_artifacts"],
+      "method": "subtask_plan_presence_check",
+      "gap_category": "decomp_without_plan",
+      "research_basis": "Missing middle: subtask without execution plan is a pipeline gap"
+    },
+    {
+      "id": "BP5",
+      "name": "bp5_fir_repeat",
+      "inputs": ["fir.proposals", "current_findings"],
+      "method": "category_intersection",
+      "gap_category": "fir_repeat",
+      "research_basis": "Cross-run learning: repeat gaps from FIR signal systemic issues"
+    }
+  ],
+
+  "comparison_to_mmd": {
+    "mmd_phase": {
+      "does": "Decomposes intent into governed subtasks (multi-modal decomposition)",
+      "does_not_do": [
+        "Check if subtasks are aligned with R1 intent (intent drift)",
+        "Check if SEE evidence covers all subtask requirements",
+        "Check if ACA assumptions are resolved",
+        "Detect repeat gaps from previous runs"
+      ]
+    },
+    "gap_detector": {
+      "adds": [
+        "BP1: backward pass from R2 subtasks → R1 intent (drift detection)",
+        "BP2: backward pass from R2 subtasks → SEE evidence (completeness)",
+        "BP3: ACA assumption → SEE evidence delta (unresolved assumptions)",
+        "BP4: MMD subtask → execution plan presence (decomp coverage)",
+        "BP5: current gaps → FIR history (repeat gap systemic detection)"
+      ],
+      "research_basis": "RT-ICA arXiv:2512.10273 — outperforms forward-only CoT on missing information detection"
+    }
+  },
+
+  "comparison_to_research_best_practices": {
+    "RT-ICA": {
+      "paper": "arXiv:2512.10273 — Reverse Thinking Enhances Missing Information Detection",
+      "method": "Backward abductive reasoning from required outcome to necessary conditions",
+      "implemented_in": ["BP1", "BP2"],
+      "gap": "Full LLM-based backward inference not yet wired (requires llm_caller injection)"
+    },
+    "information_theoretic_cot": {
+      "paper": "openreview.net/forum?id=IjOWms0hrf",
+      "method": "Measure information gain at each reasoning step; flag low-gain steps",
+      "implemented_in": ["BP3 confidence scoring"],
+      "gap": "Full per-step information gain calculation requires access to model logits"
+    },
+    "metacognitive_monitoring": {
+      "method": "Self-consistency check per reasoning step",
+      "implemented_in": ["BP1 keyword overlap as proxy"],
+      "gap": "Multi-path self-consistency requires multiple reasoning traces"
+    },
+    "fir_cross_run_learning": {
+      "method": "Cross-run gap pattern detection using reflector output",
+      "implemented_in": ["BP5"],
+      "gap": "None — fully implemented"
+    }
+  }
+}
