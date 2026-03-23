@@ -15,10 +15,7 @@
   "validation_required": true,
   "freeze_required": false,
   "requires_human_approval": true,
-  "evidence": [
-    "intent=run_egg_juicer",
-    "status=partial"
-  ],
+  "evidence": ["intent=run_egg_juicer", "status=partial"],
   "status": "VALIDATED",
   "validation_result": "PASS",
   "validation_detail": "All levels passed. No freeze impact. Human approval required: True."

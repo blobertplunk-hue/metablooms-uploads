@@ -20,41 +20,24 @@
     "validation/kernel_wiring_validation_runner.py": "sha256:c929ba92282f8d826b6caf27cb950a3785f427982f2d145ada3e7f076cd3f9ba"
   },
   "import_graph": {
-    "artifact_store/artifact_store.py": [
-      "fingerprint_engine"
-    ],
-    "commit_system/commit_system.py": [
-      "artifact_store",
-      "fingerprint_engine"
-    ],
+    "artifact_store/artifact_store.py": ["fingerprint_engine"],
+    "commit_system/commit_system.py": ["artifact_store", "fingerprint_engine"],
     "state_loader/state_loader.py": [
       "artifact_store",
       "commit_system",
       "fingerprint_engine"
     ],
-    "ir_registry/ir_registry.py": [
-      "fingerprint_engine"
-    ],
-    "pipeline_planner/pipeline_planner.py": [
-      "phase_registry"
-    ],
-    "pipeline_planner/pipeline_determinism_guard.py": [
-      "phase_registry"
-    ],
-    "governance_compiler/governance_compiler.py": [
-      "phase_registry"
-    ],
+    "ir_registry/ir_registry.py": ["fingerprint_engine"],
+    "pipeline_planner/pipeline_planner.py": ["phase_registry"],
+    "pipeline_planner/pipeline_determinism_guard.py": ["phase_registry"],
+    "governance_compiler/governance_compiler.py": ["phase_registry"],
     "mpp_executor/mpp_executor.py": [
       "artifact_store",
       "commit_system",
       "state_loader"
     ],
-    "engine_registry/engine_registry.py": [
-      "fingerprint_engine"
-    ],
-    "capability_resolver/capability_resolver.py": [
-      "phase_registry"
-    ],
+    "engine_registry/engine_registry.py": ["fingerprint_engine"],
+    "capability_resolver/capability_resolver.py": ["phase_registry"],
     "kernel_context.py": [
       "artifact_store",
       "capability_resolver",
@@ -87,9 +70,7 @@
       "hash": "sha256:4f082b2b9dc5d06a3a67cc333f30ed12eda74e3298276d56f564fcc347417d55",
       "position": "between pipeline_planner and governance_compiler",
       "schema": "MB-MPP-REASONING-1.0",
-      "produces_artifacts": [
-        "R1-R6 (6 artifacts per reasoning run)"
-      ],
+      "produces_artifacts": ["R1-R6 (6 artifacts per reasoning run)"],
       "fail_closed": true,
       "note": "Runtime extension \u2014 not a frozen kernel component. Listed in call sequence because it is a mandatory MPP stage."
     },

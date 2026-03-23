@@ -3,11 +3,7 @@
   "zip_sha256": "03a4ebc24f6c604770c4cce443ad43559411e79519109557798ca896967a884f",
   "extract_dir": "/mnt/data/Metablooms_OS_extracted",
   "member_count": 78,
-  "top_level": [
-    "KERNEL_ADOPTION_FREEZE_v4.json",
-    "mb_kernel",
-    "mb_wired"
-  ],
+  "top_level": ["KERNEL_ADOPTION_FREEZE_v4.json", "mb_kernel", "mb_wired"],
   "key_files": [
     "mb_kernel/Metablooms_OS/kernel/kernel_context.py",
     "mb_wired/metablooms_fixed_runtime_wired/metablooms_runtime_extensions/session_bootstrap.py",

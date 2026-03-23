@@ -17,68 +17,68 @@ Produce a document with the following sections. Be specific and measurable. Do n
 
 **Status:** Draft
 **Author:** Claude Code
-**Date:** *(today's date)*
+**Date:** _(today's date)_
 **Version:** 1.0
 
 ---
 
 ## 1. Problem Statement
 
-*What is broken, missing, or painful? Why does this matter now?*
+_What is broken, missing, or painful? Why does this matter now?_
 
 ## 2. Target Users
 
-*Who specifically will use or benefit from this? Include any relevant segments.*
+_Who specifically will use or benefit from this? Include any relevant segments._
 
 | User Type | Description | Frequency of Impact |
-|-----------|-------------|---------------------|
-| | | |
+| --------- | ----------- | ------------------- |
+|           |             |                     |
 
 ## 3. Goals
 
-*Measurable outcomes this change must achieve. Each goal should be verifiable.*
+_Measurable outcomes this change must achieve. Each goal should be verifiable._
 
 - [ ] Goal 1: ...
 - [ ] Goal 2: ...
 
 ## 4. Non-Goals
 
-*Explicit exclusions — what this change will NOT do. Prevents scope creep.*
+_Explicit exclusions — what this change will NOT do. Prevents scope creep._
 
 - This will not ...
 - Out of scope: ...
 
 ## 5. Success Metrics
 
-*How will we know the change succeeded? Include baseline and target values.*
+_How will we know the change succeeded? Include baseline and target values._
 
 | Metric | Baseline | Target | Measurement Method |
-|--------|----------|--------|--------------------|
-| | | | |
+| ------ | -------- | ------ | ------------------ |
+|        |          |        |                    |
 
 ## 6. Proposed Solution
 
-*High-level description. Link to technical design if available.*
+_High-level description. Link to technical design if available._
 
 ## 7. Milestones
 
-*Ordered delivery steps. Each milestone is independently reviewable.*
+_Ordered delivery steps. Each milestone is independently reviewable._
 
-| # | Milestone | Deliverable | Done When |
-|---|-----------|-------------|-----------|
-| 1 | | | |
-| 2 | | | |
+| #   | Milestone | Deliverable | Done When |
+| --- | --------- | ----------- | --------- |
+| 1   |           |             |           |
+| 2   |           |             |           |
 
 ## 8. Risks & Open Questions
 
 | Risk / Question | Likelihood | Impact | Mitigation |
-|-----------------|------------|--------|-----------|
-| | | | |
+| --------------- | ---------- | ------ | ---------- |
+|                 |            |        |            |
 
 ## 9. Appendix
 
-*Links, references, related issues.*
+_Links, references, related issues._
 
 ---
 
-*After generating, ask the plan-review subagent to critique this PRD from a Staff Engineer perspective.*
+_After generating, ask the plan-review subagent to critique this PRD from a Staff Engineer perspective._

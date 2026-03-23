@@ -16,7 +16,11 @@
       "name": "Install",
       "command": "winget install --id Ollama.Ollama --silent --accept-package-agreements --accept-source-agreements",
       "verification": "Get-Command ollama",
-      "failure_modes": ["winget_not_available", "download_failure", "already_installed_idempotent"],
+      "failure_modes": [
+        "winget_not_available",
+        "download_failure",
+        "already_installed_idempotent"
+      ],
       "remediation": "Add-AppxPackage bootstrap or retry with exponential backoff"
     },
     "stage_2": {
@@ -30,14 +34,23 @@
       "name": "Validate API",
       "command": "Invoke-RestMethod http://localhost:11434/api/tags",
       "verification": "response.models key present; HTTP 200",
-      "failure_modes": ["api_timeout", "server_not_started", "unexpected_json_schema"],
+      "failure_modes": [
+        "api_timeout",
+        "server_not_started",
+        "unexpected_json_schema"
+      ],
       "remediation": "Wait-OllamaReady loop; restart ollama serve"
     },
     "stage_4": {
       "name": "Execute Model",
       "command": "ollama pull deepseek-r1:7b; ollama run deepseek-r1:7b <prompt>",
       "verification": "Non-empty string output from model",
-      "failure_modes": ["insufficient_disk", "download_interrupted", "oom_cpu", "empty_output"],
+      "failure_modes": [
+        "insufficient_disk",
+        "download_interrupted",
+        "oom_cpu",
+        "empty_output"
+      ],
       "remediation": "Use deepseek-r1:1.5b; free disk space; retry pull"
     },
     "stage_5": {

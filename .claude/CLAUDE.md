@@ -14,6 +14,7 @@
 This is the **MetaBlooms OS** artifact repository — a governed, deterministic, artifact-first execution system.
 
 Key constraints:
+
 - Append-only commit chain: never amend published commits
 - Every write must be tracked: `artifact_store.store() → read-back → hash-verified → receipt → commit_system.commit()`
 - All artifacts include a SHA256 receipt in a paired `*_RECEIPT_*.json` file
@@ -45,6 +46,7 @@ prettier --write .
 ## Aakash Gupta — PRD Writer
 
 Use `/prd` to generate a structured Product Requirements Document:
+
 - **Problem:** What is broken or missing?
 - **Users:** Who is affected?
 - **Goals:** Measurable outcomes
@@ -56,6 +58,7 @@ Use `/prd` to generate a structured Product Requirements Document:
 
 Before finalizing any plan, spawn the `plan-review` subagent to critique the approach from a
 Staff Engineer perspective. It will challenge:
+
 - Scalability assumptions
 - Security surface area
 - Maintainability and coupling

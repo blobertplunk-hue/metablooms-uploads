@@ -35,9 +35,7 @@
       "path": "kernel/artifact_store/artifact_store.py",
       "hash": "sha256:7e2ce120ff1b47981ac2ca27fa5163bfea43b83d6f1c80da4c2014722cd36eaf",
       "exists": true,
-      "cross_component_imports": [
-        "fingerprint_engine"
-      ],
+      "cross_component_imports": ["fingerprint_engine"],
       "freeze_verified": true
     },
     "commit_system": {
@@ -45,10 +43,7 @@
       "path": "kernel/commit_system/commit_system.py",
       "hash": "sha256:a745d4b36f3f3b71ecdd215765bc223f0e27b4142f93d6c2c25a0e8cdf9ace2b",
       "exists": true,
-      "cross_component_imports": [
-        "artifact_store",
-        "fingerprint_engine"
-      ],
+      "cross_component_imports": ["artifact_store", "fingerprint_engine"],
       "freeze_verified": true
     },
     "state_loader": {
@@ -84,9 +79,7 @@
       "path": "kernel/ir_registry/ir_registry.py",
       "hash": "sha256:a36a909adb2d1c7c9c2797c0deb5a79091d45d756e9b3bf46d34e9334d44da57",
       "exists": true,
-      "cross_component_imports": [
-        "fingerprint_engine"
-      ],
+      "cross_component_imports": ["fingerprint_engine"],
       "freeze_verified": true
     },
     "pipeline_planner": {
@@ -94,9 +87,7 @@
       "path": "kernel/pipeline_planner/pipeline_planner.py",
       "hash": "sha256:3396214d3210eeb2c72e72762697bbae9e8ea4cbd5f5f82cfad9cd20c3125648",
       "exists": true,
-      "cross_component_imports": [
-        "phase_registry"
-      ],
+      "cross_component_imports": ["phase_registry"],
       "freeze_verified": true
     },
     "pipeline_determinism_guard": {
@@ -104,9 +95,7 @@
       "path": "kernel/pipeline_planner/pipeline_determinism_guard.py",
       "hash": "sha256:71a577afed411a3a823214e20ce37c86cc201d2923d4d23786d8d052df993fc2",
       "exists": true,
-      "cross_component_imports": [
-        "phase_registry"
-      ],
+      "cross_component_imports": ["phase_registry"],
       "freeze_verified": true
     },
     "governance_compiler": {
@@ -114,9 +103,7 @@
       "path": "kernel/governance_compiler/governance_compiler.py",
       "hash": "sha256:e86b40f1d5cbca87079e37d05a291465968d0cc8a9f14cc6d01479255a3b7322",
       "exists": true,
-      "cross_component_imports": [
-        "phase_registry"
-      ],
+      "cross_component_imports": ["phase_registry"],
       "freeze_verified": true
     },
     "mpp_executor": {
@@ -136,9 +123,7 @@
       "path": "kernel/engine_registry/engine_registry.py",
       "hash": "sha256:40b2d5425b5a8b39f7715cacc9b095e94e020aece58f22ddf4268afea8d40697",
       "exists": true,
-      "cross_component_imports": [
-        "fingerprint_engine"
-      ],
+      "cross_component_imports": ["fingerprint_engine"],
       "freeze_verified": true
     },
     "capability_resolver": {
@@ -146,9 +131,7 @@
       "path": "kernel/capability_resolver/capability_resolver.py",
       "hash": "sha256:c9ebf9c192bebfde8ee92423ac8878d2005c20f5fb37e2205c8993822d7a5a74",
       "exists": true,
-      "cross_component_imports": [
-        "phase_registry"
-      ],
+      "cross_component_imports": ["phase_registry"],
       "freeze_verified": true
     },
     "kernel_context": {
@@ -174,10 +157,7 @@
       "path": "kernel/validation/kernel_wiring_validation_runner.py",
       "hash": "sha256:c929ba92282f8d826b6caf27cb950a3785f427982f2d145ada3e7f076cd3f9ba",
       "exists": true,
-      "cross_component_imports": [
-        "fingerprint_engine",
-        "kernel_context"
-      ],
+      "cross_component_imports": ["fingerprint_engine", "kernel_context"],
       "freeze_verified": true
     },
     "reasoning_engine": {
@@ -217,10 +197,7 @@
       "path": "runtime/artifact_graph_index_engine.py",
       "hash": "sha256:db8971ea9ad3a04dc3d12419eb1570965eabe60c5c822376603d343a423cda59",
       "exists": true,
-      "cross_component_imports": [
-        "artifact_store",
-        "commit_system"
-      ],
+      "cross_component_imports": ["artifact_store", "commit_system"],
       "freeze_verified": null
     },
     "capability_graph_engine": {
