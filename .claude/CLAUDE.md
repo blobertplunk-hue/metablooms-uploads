@@ -5,7 +5,7 @@
 - **Parallel agents:** Run independent subtasks in parallel; never serialize what can be parallelized.
 - **Plan-first:** Use plan mode first (`/plan`). Only switch to auto-accept for well-scoped execution.
 - **Verification loops:** After every change, tests and linters must pass before committing.
-- **Self-updating:** When you make a mistake, append an entry to the Mistake Log below so you don't repeat it.
+- **Self-updating:** When a mistake is discovered (user correction, failed command, wrong output, any error), immediately run `bash scripts/log-mistake.sh "what went wrong → what the fix was"` (Linux/macOS) or `pwsh -File scripts/log-mistake.ps1 "..."` (Windows). This is non-negotiable. The Stop hook also fires `/mistake` automatically at session end. Never rely on memory alone — the log is the record.
 - **Fail-closed:** Never silently continue on error. Abort with a clear message.
 - **Evidence over claims:** A receipt or test output proves execution; a comment or docstring does not.
 
