@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poem Puzzle Board</title>
+<style>
+body{margin:0;font-family:Arial;background:#0f172a;color:#e5e7eb}
+.container{display:grid;gap:10px;padding:10px}
+@media(min-width:900px){.container{grid-template-columns:1fr 1fr}}
+.card{background:#111827;padding:10px;border-radius:10px}
+.line,.tile{padding:8px;margin:5px 0;border:1px solid #374151;border-radius:8px;cursor:pointer}
+.line.selected{background:#fde68a;color:#111827}
+.zone{border:2px dashed #374151;padding:8px;min-height:120px;border-radius:10px}
+.zone.correct{border-color:#22c55e}
+.zone.wrong{border-color:#ef4444}
+.feedback{min-height:20px}
+button{padding:6px 10px;margin-top:6px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="card">
+<h3>Text</h3>
+<div id="text"></div>
+<button onclick="speakText()">🔊 Read</button>
+<div id="feedback" class="feedback"></div>
+</div>
+
+<div class="card">
+<h3>Puzzle Board</h3>
+<div id="zones">
+<div class="zone" data-zone="action"><b>What the dog does</b></div>
+<div class="zone" data-zone="feeling"><b>How the speaker feels</b></div>
+<div class="zone" data-zone="description"><b>Describing words</b></div>
+<div class="zone" data-zone="idea"><b>Big idea clues</b></div>
+</div>
+
+<div id="applyBox" style="display:none">
+<textarea id="response" placeholder="The speaker feels ___ because ___"></textarea>
+<button onclick="checkResponse()">Check</button>
+<div id="applyFeedback"></div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// DATA
+const PHRASES=[
+{id:1,text:"runs and jumps",type:"action"},
+{id:2,text:"loves when I brush him",type:"action"},
+{id:3,text:"truly adore",type:"feeling"},
+{id:4,text:"never depressed",type:"feeling"},
+{id:5,text:"amazing",type:"description"},
+{id:6,text:"cute",type:"description"},
+{id:7,text:"Dogs are the best",type:"idea"}
+];
+
+// STATE
+let state={selected:null,placed:[]};
+
+// RENDER TEXT
+const textDiv=document.getElementById("text");
+PHRASES.forEach(p=>{
+let el=document.createElement("div");
+el.className="line";
+el.innerText=p.text;
+el.onclick=()=>selectTile(p.id,el);
+textDiv.appendChild(el);
+});
+
+// SELECT
+function selectTile(id,el){
+document.querySelectorAll(".line").forEach(e=>e.classList.remove("selected"));
+el.classList.add("selected");
+state.selected=id;
+setFeedback("Now place it on the board.");
+}
+
+// PLACE
+document.querySelectorAll(".zone").forEach(z=>{
+z.onclick=()=>placeTile(z.dataset.zone,z);
+});
+
+function placeTile(zoneId,zoneEl){
+if(!state.selected){setFeedback("Select a phrase first.");return;}
+let tile=PHRASES.find(p=>p.id===state.selected);
+
+if(tile.type===zoneId){
+let t=document.createElement("div");
+t.className="tile";
+t.innerText=tile.text;
+zoneEl.appendChild(t);
+zoneEl.classList.add("correct");
+setTimeout(()=>zoneEl.classList.remove("correct"),300);
+
+state.placed.push(tile.id);
+setFeedback("Correct placement.");
+}else{
+zoneEl.classList.add("wrong");
+setTimeout(()=>zoneEl.classList.remove("wrong"),300);
+setFeedback("That belongs in a different category.");
+}
+
+state.selected=null;
+document.querySelectorAll(".line").forEach(e=>e.classList.remove("selected"));
+
+checkCompletion();
+}
+
+// COMPLETION
+function checkCompletion(){
+if(state.placed.length===PHRASES.length){
+document.getElementById("applyBox").style.display="block";
+setFeedback("Great! Now explain your thinking.");
+}
+}
+
+// APPLY
+function checkResponse(){
+let val=document.getElementById("response").value;
+if(val.includes("because")){
+document.getElementById("applyFeedback").innerText="Good reasoning.";
+}else{
+document.getElementById("applyFeedback").innerText="Use 'because' to explain.";
+}
+}
+
+// FEEDBACK
+function setFeedback(msg){
+document.getElementById("feedback").innerText=msg;
+}
+
+// TTS
+function speakText(){
+let txt=PHRASES.map(p=>p.text).join(" ");
+let u=new SpeechSynthesisUtterance(txt);
+speechSynthesis.speak(u);
+}
+
+</script>
+
+</body>
+</html>

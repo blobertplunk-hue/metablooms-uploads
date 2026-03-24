@@ -1,0 +1,7 @@
+{
+  "artifact": "OS_EXPORT",
+  "source": "/mnt/data/extracted_os_v3",
+  "output": "/mnt/data/Metablooms_OS_v3_EXPORT.zip",
+  "timestamp": "2026-03-22T16:39:31.584103Z",
+  "hash": "1c850bd2c8235dbbaac7ea2fe6c8ef5a727e6d002250d63c8929d5f34305c3d0"
+}

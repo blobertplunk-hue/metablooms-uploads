@@ -1,0 +1,413 @@
+{
+  "cartridge_id": "RESEARCH_PIPELINE",
+  "version": "1.0.0",
+  "spec_version": "CARTRIDGE_SPEC-1.0",
+  "domain": "evidence_research",
+  "subdomain": "web_see_domain_knowledge",
+  "envelope": "USB-1.0",
+  "status": "ACTIVE",
+  "created_at": "2026-03-22T00:00:00Z",
+  "updated_at": "2026-03-22T00:00:00Z",
+  "sha256": "48d16b2e82796626e387e83a93e1b9a9e39279afab60014a39f9ea1281a47ca0",
+  "provenance": {
+    "generated_by": "HUMAN",
+    "generator_version": null,
+    "research_session_id": "COEV-062",
+    "research_sources": [
+      "MetaBlooms OS v10 engines/WEB_SEE_ENGINE.py",
+      "MetaBlooms OS v10 knowledge/SEE_QUERIES.json",
+      "MetaBlooms OS v10 docs/MPP_PROTOCOL.md (Stage 1 SEE, Stage 2 MMD)",
+      "ReAct: Synergizing Reasoning and Acting in LLMs (Yao et al. ICLR 2023)",
+      "REST meets ReAct (ICLR 2024)",
+      "Let's Verify Step by Step (Lightman et al. 2023)",
+      "Reflexion (Shinn et al. 2023)",
+      "MetaBlooms MS-SEE-001 (CHAT_HISTORY_BEFORE_BUILDING)",
+      "MetaBlooms MS-SEE-002 (RECURSIVE_MULTI_QUERY_SEARCH)"
+    ],
+    "human_author": "Robert (MetaBlooms architect)",
+    "review_status": "CERTIFIED",
+    "notes": "Required by CARTRIDGE_GENERATOR Stage 1. Governs all research operations across every domain. No cartridge can be generated without this cartridge active. Load after PYTHON_CODE_QUALITY."
+  },
+  "domain_knowledge": {
+    "source": "Extracted from WEB_SEE_ENGINE.py, SEE_QUERIES.json, MPP Stage 1-2, MS-SEE-001, MS-SEE-002",
+    "knowledge_db": null,
+    "atoms": 54,
+    "links": 21,
+    "rebuild_at_boot": false,
+    "last_rebuilt": "2026-03-22T00:00:00Z",
+    "summary": "Evidence gathering methodology for MetaBlooms OS. Covers three evidence dimensions (theory/implementation/failure_modes), five evidence classifications (E0-E4), credibility scoring by source type, contradiction detection, citation graph construction, and minimum confidence thresholds. Grounded in ReAct, REST meets ReAct, and empirical MetaBlooms session data."
+  },
+  "expert_lenses": {
+    "language_of_discipline": [
+      "evidence classification (E0-E4)",
+      "theory dimension",
+      "implementation dimension",
+      "failure_modes dimension",
+      "citation graph",
+      "credibility score",
+      "contradiction detection",
+      "consensus score",
+      "evidence confidence",
+      "fail-closed on missing dimension",
+      "SHA-256 content hash",
+      "source URL verifiable",
+      "rate limit",
+      "fallback chain",
+      "substantive evidence (MIN_CONTENT_WORDS)"
+    ],
+    "big_idea": "Evidence must precede every claim. A claim without a source URL and SHA-256 hash is an assertion. Assertions are not evidence. Research fails closed \u2014 partial evidence is worse than no evidence because it creates false confidence.",
+    "unanswered_questions": [
+      "Has every evidence dimension (theory, implementation, failure_modes) been filled with substantive content?",
+      "Is the evidence confidence above the 0.15 minimum threshold?",
+      "Are source URLs verifiable and content hashes computed over actual fetched bytes?",
+      "Have contradictions between sources been detected and documented?"
+    ],
+    "ethics": "Fabricated evidence is the worst research failure. A source URL that returns 404 must be reported as MISSING, not silently replaced with generated content. The caller must know when evidence is real vs derived. SHA-256 over actual bytes is the proof of realness.",
+    "patterns": "World-class research in MetaBlooms: 5-7 parallel queries with meaningfully different keyword strategies, three dimensions always covered, source credibility scored by type (docs=0.95, standard=0.90, package=0.80, code_repo=0.75, issue=0.70), fallback chain for rate-limited APIs, contradiction detection between same-type sources.",
+    "change_over_time": "MetaBlooms SEE evolved from LOCAL_SEE (stub pattern-matcher) through WEB_SEE_ENGINE v1 (real HTTP, single query) to v10 (three dimensions, citation graph, contradiction detection, confidence scoring, fallback chains). Each version closed a class of fabricated evidence.",
+    "across_disciplines": [
+      "Information retrieval (TF-IDF, relevance scoring)",
+      "Epistemology (justified true belief \u2014 what counts as knowing)",
+      "Investigative journalism (source verification, multiple independent sources)",
+      "Legal evidence (chain of custody, verifiable provenance)"
+    ],
+    "multiple_perspectives": "Speed vs rigor: fast research skips contradiction detection and confidence thresholds. Rigorous research requires all three dimensions, real hashes, and minimum confidence. MetaBlooms chooses rigor \u2014 a slow correct build beats a fast wrong one.",
+    "details_vs_big_picture": "Zoom in: every receipt needs a SHA-256 hash over actual fetched bytes, not generated content. Zoom out: the research pipeline is the foundation \u2014 if it is weak, every cartridge built on it is weak.",
+    "rules_vs_exceptions": "Three dimensions required: no exceptions. SHA-256 over actual bytes: no exceptions. Confidence >= 0.15: no exceptions. Rate limit fallback chain IS the exception handling \u2014 use it rather than failing on first 403.",
+    "proof": "Proof of quality research: three dimensions filled, evidence_confidence >= 0.15, all source URLs return 200 or documented fallback used, SHA-256 computed over actual bytes, contradiction_count documented."
+  },
+  "quality_rubric": {
+    "rubric_id": "RUBRIC_RESEARCH_PIPELINE",
+    "scoring_tiers": {
+      "S": "All three evidence dimensions filled with substantive content. Confidence >= 0.50. All source URLs verified (200 or documented fallback). SHA-256 on every receipt. Contradiction detection run. 5+ unique sources.",
+      "A": "All three dimensions filled. Confidence >= 0.30. At least one real URL per dimension. SHA-256 present. Minor gap (e.g. one fallback used).",
+      "B": "Two of three dimensions filled. Confidence >= 0.15. Some real sources. SHA-256 present. One dimension derived rather than fetched.",
+      "C": "One dimension filled or confidence < 0.15. Evidence quality too low to support downstream cartridge generation. Do not proceed.",
+      "F": "Zero real sources fetched. Fabricated evidence present. No SHA-256 on receipts. Evidence confidence == 0.0. Hard block \u2014 CARTRIDGE_GENERATOR must not proceed."
+    },
+    "forge_block_threshold": "C",
+    "criteria": [
+      {
+        "id": "RS-R01",
+        "name": "THREE_DIMENSIONS_COVERED",
+        "description": "All three evidence dimensions present in receipts: theory, implementation, failure_modes. Each must have substantive content (>= 15 words).",
+        "weight": 0.3,
+        "s_tier_signal": "All three dimensions present, each with >= 100 words of substantive content and a real source URL.",
+        "f_tier_signal": "Zero dimensions filled or evidence is entirely fabricated. Linked: ME-RES-001 (DIMENSION_MISSING)."
+      },
+      {
+        "id": "RS-R02",
+        "name": "SHA256_ON_ALL_RECEIPTS",
+        "description": "Every evidence receipt has content_hash (SHA-256 of actual fetched bytes) and result_hash (SHA-256 of summarized content). Neither field is empty string.",
+        "weight": 0.25,
+        "s_tier_signal": "All receipts have non-empty content_hash and result_hash. Hashes computed over actual bytes not generated strings.",
+        "f_tier_signal": "Any receipt with empty hash fields or hash computed over generated content. Linked: ME-RES-002 (FABRICATED_HASH)."
+      },
+      {
+        "id": "RS-R03",
+        "name": "CONFIDENCE_THRESHOLD_MET",
+        "description": "evidence_confidence >= 0.15 (minimum) across all receipts. Confidence is computed from node count, average credibility, and contradiction penalty.",
+        "weight": 0.2,
+        "s_tier_signal": "evidence_confidence >= 0.50. 5+ evidence nodes. Low contradiction count.",
+        "f_tier_signal": "evidence_confidence < 0.15. Pipeline must not proceed. Linked: ME-RES-003 (LOW_CONFIDENCE_EVIDENCE)."
+      },
+      {
+        "id": "RS-R04",
+        "name": "SOURCE_VERIFIABILITY",
+        "description": "Every receipt has a source_url that either returned HTTP 200 or has a documented fallback reason. No receipt source_url is empty or fabricated.",
+        "weight": 0.15,
+        "s_tier_signal": "All source_urls returned 200 or fallback is explicitly documented with reason. fetch_status recorded on every receipt.",
+        "f_tier_signal": "Any receipt with empty source_url or undocumented fallback. Linked: ME-RES-004 (UNVERIFIABLE_SOURCE)."
+      },
+      {
+        "id": "RS-R05",
+        "name": "CONTRADICTION_DETECTION_RUN",
+        "description": "Citation graph has been built and contradiction detection has been run. contradiction_count is present on all receipts (0 is valid \u2014 absence of the field is not).",
+        "weight": 0.1,
+        "s_tier_signal": "citation_graph present on all receipts. contradiction_count field present. Any contradictions documented with interpretation.",
+        "f_tier_signal": "No citation_graph built. Contradiction detection skipped. Linked: ME-RES-005 (CONTRADICTION_SKIPPED)."
+      }
+    ]
+  },
+  "mistake_classes": [
+    {
+      "id": "ME-RES-001",
+      "name": "DIMENSION_MISSING",
+      "description": "One or more of the three required evidence dimensions (theory, implementation, failure_modes) was not filled with substantive content. Pipeline proceeded on incomplete evidence.",
+      "severity": "S4_CRITICAL",
+      "detection": "Check receipts list \u2014 must contain exactly three entries with dimensions: theory, implementation, failure_modes. Each must have result with >= 15 words.",
+      "recovery": "Retry the missing dimension with different queries. Use fallback sources (PyPI, PEP index). If all fallbacks fail: raise WEB_SEE_DIMENSION_MISSING and abort.",
+      "linked_success": "MS-RES-001"
+    },
+    {
+      "id": "ME-RES-002",
+      "name": "FABRICATED_HASH",
+      "description": "SHA-256 hash computed over generated/fabricated content rather than actual fetched bytes. Looks like real evidence but is not verifiable.",
+      "severity": "S4_CRITICAL",
+      "detection": "content_hash must be SHA-256 of raw HTTP response bytes. result_hash must be SHA-256 of the summarized string. Neither should be SHA-256 of placeholder text.",
+      "recovery": "Re-fetch. Compute hash over response.content (bytes), not over generated summary. If fetch fails: mark dimension MISSING, do not fabricate.",
+      "linked_success": "MS-RES-002"
+    },
+    {
+      "id": "ME-RES-003",
+      "name": "LOW_CONFIDENCE_EVIDENCE",
+      "description": "Evidence confidence below 0.15 threshold. Proceeding builds cartridge on insufficient foundation. Every downstream artifact inherits this weakness.",
+      "severity": "S3_HIGH",
+      "detection": "evidence_confidence field on any receipt < 0.15. Or all_nodes count < 2.",
+      "recovery": "Expand query diversity \u2014 use 5-7 different keyword strategies. Add more source types. If confidence still < 0.15 after 3 attempts: abort with WEB_SEE_LOW_CONFIDENCE.",
+      "linked_success": "MS-RES-003"
+    },
+    {
+      "id": "ME-RES-004",
+      "name": "UNVERIFIABLE_SOURCE",
+      "description": "Receipt source_url is empty, points to a URL that returned non-200, or is documented as local: without explicit fallback justification.",
+      "severity": "S3_HIGH",
+      "detection": "source_url empty string or fetch_status != 200 without documented fallback_reason field.",
+      "recovery": "Document fallback: add fallback_reason field explaining why real source unavailable and what derived source was used instead. Never leave source_url empty.",
+      "linked_success": "MS-RES-004"
+    },
+    {
+      "id": "ME-RES-005",
+      "name": "CONTRADICTION_SKIPPED",
+      "description": "Citation graph not built or contradiction detection not run. Conflicting sources silently passed to downstream stages.",
+      "severity": "S2_MED",
+      "detection": "citation_graph field absent from receipts. contradiction_count field absent.",
+      "recovery": "Run _detect_contradictions() on all_nodes before building receipts. Attach graph_dict to every receipt.",
+      "linked_success": "MS-RES-005"
+    },
+    {
+      "id": "ME-RES-006",
+      "name": "SINGLE_QUERY_ONLY",
+      "description": "Only one search query used for entire domain. Research breadth insufficient \u2014 single query misses entire sub-domains of knowledge.",
+      "severity": "S2_MED",
+      "detection": "research_queries in cartridge has fewer than 3 entries. WEB_SEE_ENGINE called with single keyword set.",
+      "recovery": "Apply MS-SEE-002 (RECURSIVE_MULTI_QUERY_SEARCH): generate 5-7 queries with meaningfully different keyword strategies. Cross-reference findings.",
+      "linked_success": "MS-RES-003"
+    },
+    {
+      "id": "ME-RES-007",
+      "name": "RATE_LIMIT_ABORT",
+      "description": "Research aborted on first 403 from GitHub without attempting fallback chain. Unnecessary failure \u2014 fallback sources available.",
+      "severity": "S2_MED",
+      "detection": "WEB_SEE_IMPL_MISSING raised with GitHub 403 as reason but PyPI and PEP fallbacks not attempted.",
+      "recovery": "Follow fallback chain: GitHub \u2192 PyPI \u2192 PEP index \u2192 MISTAKE_REGISTRY derived. Only abort if all four fail.",
+      "linked_success": "MS-RES-001"
+    }
+  ],
+  "success_patterns": [
+    {
+      "id": "MS-RES-001",
+      "name": "THREE_DIMENSION_COVERAGE",
+      "description": "Always fill all three evidence dimensions before proceeding. Theory grounds the what. Implementation grounds the how. Failure modes ground the what-can-go-wrong.",
+      "protocol": [
+        "1. Theory: fetch from official docs, standards, academic papers",
+        "2. Implementation: fetch from GitHub repos, PyPI packages, PEP standards",
+        "3. Failure modes: fetch from GitHub issues, bug reports, MISTAKE_REGISTRY",
+        "4. If any dimension fails: use documented fallback, never skip silently",
+        "5. Record fetch_status and source_url on every receipt"
+      ],
+      "research_basis": "ReAct (Yao et al. ICLR 2023) \u2014 interleaving reasoning with real web evidence. MPP Stage 1 SEE three-dimension model.",
+      "linked_mistake": "ME-RES-001"
+    },
+    {
+      "id": "MS-RES-002",
+      "name": "HASH_OVER_BYTES_NOT_STRINGS",
+      "description": "SHA-256 always computed over raw response bytes (response.content), not over Python strings or generated summaries. Bytes are the proof of fetch.",
+      "protocol": [
+        "1. raw = response.content  # bytes, not .text",
+        "2. content_hash = hashlib.sha256(raw).hexdigest()",
+        "3. Store content_hash in receipt before any processing",
+        "4. result_hash = hashlib.sha256(summary_string.encode()).hexdigest()",
+        "5. Both fields required on every receipt"
+      ],
+      "research_basis": "Let's Verify Step by Step (Lightman et al. 2023) \u2014 step-level verification. MetaBlooms CS-008 (SHA256_ON_ALL_ARTIFACTS).",
+      "linked_mistake": "ME-RES-002"
+    },
+    {
+      "id": "MS-RES-003",
+      "name": "RECURSIVE_MULTI_QUERY_SEARCH",
+      "description": "Run 5-7 parallel searches with meaningfully different keyword strategies. Cross-reference findings. This is MS-SEE-002 promoted to the research cartridge.",
+      "protocol": [
+        "1. Generate queries: domain fundamentals, quality signals, failure patterns, expert vocabulary, cross-domain connections",
+        "2. Each query uses different keyword strategy \u2014 not just synonyms",
+        "3. Cross-reference: findings that appear in 3+ sources are high-confidence",
+        "4. Findings in only 1 source: flag as single-source, lower confidence weight",
+        "5. Document query list in cartridge research_queries field"
+      ],
+      "research_basis": "MetaBlooms MS-SEE-002 (RECURSIVE_MULTI_QUERY_SEARCH) \u2014 proven in 60+ build sessions.",
+      "linked_mistake": "ME-RES-003"
+    },
+    {
+      "id": "MS-RES-004",
+      "name": "DOCUMENT_FALLBACK_EXPLICITLY",
+      "description": "When real source unavailable, document exactly what fallback was used and why. Caller can then evaluate evidence quality appropriately.",
+      "protocol": [
+        "1. First attempt: real URL fetch",
+        "2. If 403/timeout: log \"FALLBACK: GitHub rate limited, trying PyPI\"",
+        "3. Add fallback_reason field to receipt: \"GitHub 403 \u2014 used PyPI package info\"",
+        "4. Never leave source_url empty \u2014 use \"local:FALLBACK_SOURCE_NAME\"",
+        "5. Set fetch_status to 0 for derived content (not fabricated, derived)"
+      ],
+      "research_basis": "MetaBlooms WEB_SEE_ENGINE fallback chain implementation \u2014 tested across GitHub/PyPI/PEP fallback scenarios.",
+      "linked_mistake": "ME-RES-004"
+    },
+    {
+      "id": "MS-RES-005",
+      "name": "CITATION_GRAPH_ALWAYS",
+      "description": "Build citation graph on every research run. Contradiction detection is only valuable if it actually runs.",
+      "protocol": [
+        "1. Collect all EvidenceNodes across all dimensions into all_nodes list",
+        "2. Run _detect_contradictions(all_nodes) before building receipts",
+        "3. Compute confidence score: base * avg_credibility - contradiction_penalty",
+        "4. Attach citation_graph dict to every receipt",
+        "5. Log contradiction_count even when 0 \u2014 absence of field is not the same as zero contradictions"
+      ],
+      "research_basis": "MetaBlooms WEB_SEE_ENGINE citation graph implementation. Epistemological principle: contradictions must be surfaced, not buried.",
+      "linked_mistake": "ME-RES-005"
+    }
+  ],
+  "artifact_types": [
+    {
+      "type_id": "SEE_RECEIPT",
+      "description": "A MetaBlooms evidence receipt from WEB_SEE_ENGINE. Contains dimension, result, result_hash, content_hash, source_url, fetch_status, citation_graph, evidence_confidence.",
+      "file_extensions": [
+        ".json"
+      ],
+      "schema_ref": null,
+      "forge_rubric": "RUBRIC_RESEARCH_PIPELINE"
+    },
+    {
+      "type_id": "KNOWLEDGE_ATOM",
+      "description": "A discrete fact extracted from research. Has source URL, content hash, credibility score, and source type.",
+      "file_extensions": [
+        ".json"
+      ],
+      "schema_ref": null,
+      "forge_rubric": "RUBRIC_RESEARCH_PIPELINE"
+    }
+  ],
+  "domain_stages": [
+    {
+      "stage_id": 1,
+      "name": "QUERY_GENERATION",
+      "description": "Generate 5-7 research queries from domain_request with different keyword strategies. Minimum 3 queries covering: fundamentals, quality signals, failure patterns.",
+      "required": true,
+      "maps_to_mpp": 1
+    },
+    {
+      "stage_id": 2,
+      "name": "DIMENSION_FETCH",
+      "description": "Fetch all three dimensions (theory, implementation, failure_modes). Apply fallback chain on failure. Compute SHA-256 over raw bytes on every fetch.",
+      "required": true,
+      "maps_to_mpp": 1
+    },
+    {
+      "stage_id": 3,
+      "name": "CITATION_GRAPH_BUILD",
+      "description": "Collect all EvidenceNodes. Run contradiction detection. Compute confidence score. Attach graph to all receipts.",
+      "required": true,
+      "maps_to_mpp": 1
+    },
+    {
+      "stage_id": 4,
+      "name": "CONFIDENCE_GATE",
+      "description": "Verify evidence_confidence >= 0.15. If below threshold: retry with expanded queries. If still below after 3 attempts: abort WEB_SEE_LOW_CONFIDENCE.",
+      "required": true,
+      "maps_to_mpp": 2
+    },
+    {
+      "stage_id": 5,
+      "name": "RECEIPT_VALIDATION",
+      "description": "Verify all receipts have: non-empty content_hash, result_hash, source_url, fetch_status, citation_graph, evidence_confidence, contradiction_count.",
+      "required": true,
+      "maps_to_mpp": 12
+    }
+  ],
+  "composition": {
+    "compatible_with": [
+      "PYTHON_CODE_QUALITY",
+      "WORLD_CLASS_TEACHING_HTML",
+      "STAAR_ASSESSMENT_DESIGN",
+      "CARTRIDGE_GENERATOR"
+    ],
+    "incompatible_with": [],
+    "requires": [
+      "PYTHON_CODE_QUALITY"
+    ],
+    "conflict_resolution": "MERGE_RUBRICS"
+  },
+  "forge_config": {
+    "engine": null,
+    "min_passes": 1,
+    "s_tier_required": false,
+    "distill_on_success": true,
+    "distill_on_failure": true
+  },
+  "research_queries": [
+    "web search evidence gathering LLM grounding ReAct reasoning acting 2023",
+    "information retrieval credibility scoring source verification research quality",
+    "SHA-256 content integrity verification chain of custody digital evidence",
+    "contradiction detection conflicting sources research synthesis methodology",
+    "Python web scraping HTTP fetch rate limiting fallback strategies",
+    "citation graph knowledge graph evidence nodes links research pipeline"
+  ],
+  "fmea": [
+    {
+      "failure_mode": "Evidence dimension fabricated when fetch fails",
+      "effect": "Cartridge built on invented facts. Every downstream artifact inherits fabricated foundation.",
+      "severity": 10,
+      "likelihood": 7,
+      "detectability": 9,
+      "rpn": 630,
+      "mitigation": "ME-RES-002 (FABRICATED_HASH). SHA-256 over raw bytes \u2014 fabricated content produces hash that does not match any real URL. WEB_SEE_ENGINE fail-closed: missing dimension raises RuntimeError."
+    },
+    {
+      "failure_mode": "Single query used for entire domain research",
+      "effect": "Entire sub-domains missed. Cartridge has blind spots that compound into missing mistake classes.",
+      "severity": 7,
+      "likelihood": 8,
+      "detectability": 6,
+      "rpn": 336,
+      "mitigation": "ME-RES-006 (SINGLE_QUERY_ONLY). MS-RES-003 (RECURSIVE_MULTI_QUERY_SEARCH). CARTRIDGE_GENERATOR Stage 1 requires minimum 5 queries."
+    },
+    {
+      "failure_mode": "Low confidence evidence passes gate",
+      "effect": "Cartridge rubric criteria and mistake classes not grounded in real evidence. FORGE scores artifacts against weak criteria.",
+      "severity": 8,
+      "likelihood": 5,
+      "detectability": 7,
+      "rpn": 280,
+      "mitigation": "ME-RES-003 (LOW_CONFIDENCE_EVIDENCE). Confidence gate in Stage 4: abort if < 0.15 after 3 attempts."
+    },
+    {
+      "failure_mode": "GitHub rate limit causes research abort without fallback",
+      "effect": "Implementation dimension missing. CARTRIDGE_GENERATOR Stage 1 fails unnecessarily.",
+      "severity": 5,
+      "likelihood": 8,
+      "detectability": 3,
+      "rpn": 120,
+      "mitigation": "ME-RES-007 (RATE_LIMIT_ABORT). MS-RES-004 (DOCUMENT_FALLBACK_EXPLICITLY). Fallback chain: GitHub \u2192 PyPI \u2192 PEP index \u2192 MISTAKE_REGISTRY."
+    },
+    {
+      "failure_mode": "Contradictions between sources silently buried",
+      "effect": "Downstream stages receive conflicting facts as if they are consensus. Cartridge mistake classes may contradict each other.",
+      "severity": 6,
+      "likelihood": 5,
+      "detectability": 8,
+      "rpn": 240,
+      "mitigation": "ME-RES-005 (CONTRADICTION_SKIPPED). MS-RES-005 (CITATION_GRAPH_ALWAYS). contradiction_count required field on every receipt."
+    }
+  ],
+  "dok_calibration": {
+    "target_dok": 3,
+    "dok_descriptors": {
+      "1": "Recall: name the three evidence dimensions, identify a valid source type, recall minimum confidence threshold (0.15).",
+      "2": "Apply: run WEB_SEE_ENGINE on a domain request, compute SHA-256 on fetched bytes, use fallback chain when GitHub returns 403.",
+      "3": "Analyze: evaluate evidence quality across dimensions, detect contradictions, design a 5-query research strategy for a novel domain, debug a low-confidence result.",
+      "4": "Extend: design a new source type with credibility scoring, add a new evidence dimension, propose a new contradiction detection heuristic, derive FMEA from research failures."
+    },
+    "default_learner_dok": 2,
+    "dok_mismatch_class": "ME-RES-006"
+  },
+  "mpp_override": null
+}

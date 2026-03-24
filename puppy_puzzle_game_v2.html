@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Puppy Puzzle Reading Game v2</title>
+<style>
+:root {
+  --bg:#0f172a; --panel:#111827; --ink:#e5e7eb; --muted:#94a3b8;
+  --good:#22c55e; --bad:#ef4444; --gold:#f59e0b; --blue:#3b82f6;
+  --board-w:min(92vw, 440px);
+  --img:url("data:image/svg+xml;utf8,%0A%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20400%20400%27%3E%0A%20%20%3Crect%20width%3D%27400%27%20height%3D%27400%27%20fill%3D%27%23f6f2e8%27/%3E%0A%20%20%3Cellipse%20cx%3D%27200%27%20cy%3D%27225%27%20rx%3D%27120%27%20ry%3D%27110%27%20fill%3D%27%23d8a35d%27/%3E%0A%20%20%3Cellipse%20cx%3D%27140%27%20cy%3D%27115%27%20rx%3D%2742%27%20ry%3D%2778%27%20fill%3D%27%238b5a2b%27%20transform%3D%27rotate%28-25%20140%20115%29%27/%3E%0A%20%20%3Cellipse%20cx%3D%27260%27%20cy%3D%27115%27%20rx%3D%2742%27%20ry%3D%2778%27%20fill%3D%27%238b5a2b%27%20transform%3D%27rotate%2825%20260%20115%29%27/%3E%0A%20%20%3Ccircle%20cx%3D%27200%27%20cy%3D%27180%27%20r%3D%2792%27%20fill%3D%27%23e3b16a%27/%3E%0A%20%20%3Cellipse%20cx%3D%27200%27%20cy%3D%27210%27%20rx%3D%2762%27%20ry%3D%2748%27%20fill%3D%27%23f6e6cf%27/%3E%0A%20%20%3Ccircle%20cx%3D%27165%27%20cy%3D%27170%27%20r%3D%2710%27%20fill%3D%27%231f2937%27/%3E%0A%20%20%3Ccircle%20cx%3D%27235%27%20cy%3D%27170%27%20r%3D%2710%27%20fill%3D%27%231f2937%27/%3E%0A%20%20%3Ccircle%20cx%3D%27162%27%20cy%3D%27167%27%20r%3D%273%27%20fill%3D%27%23fff%27/%3E%0A%20%20%3Ccircle%20cx%3D%27232%27%20cy%3D%27167%27%20r%3D%273%27%20fill%3D%27%23fff%27/%3E%0A%20%20%3Cellipse%20cx%3D%27200%27%20cy%3D%27205%27%20rx%3D%2712%27%20ry%3D%279%27%20fill%3D%27%231f2937%27/%3E%0A%20%20%3Cpath%20d%3D%27M188%20218%20Q200%20232%20212%20218%27%20fill%3D%27none%27%20stroke%3D%27%231f2937%27%20stroke-width%3D%275%27%20stroke-linecap%3D%27round%27/%3E%0A%20%20%3Cellipse%20cx%3D%27120%27%20cy%3D%27260%27%20rx%3D%2718%27%20ry%3D%2730%27%20fill%3D%27%238b5a2b%27/%3E%0A%20%20%3Cellipse%20cx%3D%27280%27%20cy%3D%27260%27%20rx%3D%2718%27%20ry%3D%2730%27%20fill%3D%27%238b5a2b%27/%3E%0A%20%20%3Cpath%20d%3D%27M310%20220%20q45%2015%2018%2062%27%20fill%3D%27none%27%20stroke%3D%27%238b5a2b%27%20stroke-width%3D%2712%27%20stroke-linecap%3D%27round%27/%3E%0A%20%20%3Ccircle%20cx%3D%27115%27%20cy%3D%27258%27%20r%3D%276%27%20fill%3D%27%231f2937%27/%3E%0A%20%20%3Ccircle%20cx%3D%27285%27%20cy%3D%27258%27%20r%3D%276%27%20fill%3D%27%231f2937%27/%3E%0A%20%20%3Cpath%20d%3D%27M95%20305%20q105%2030%20210%200%27%20fill%3D%27none%27%20stroke%3D%27%23d1d5db%27%20stroke-width%3D%2710%27%20opacity%3D%27.45%27/%3E%0A%3C/svg%3E%0A");
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#0f172a,#111827);color:var(--ink)}
+.header{padding:14px 16px;border-bottom:1px solid #263042;background:#020617;position:sticky;top:0;z-index:3}
+.header h1{margin:0;font-size:20px}
+.sub{color:var(--muted);font-size:13px;line-height:1.35}
+.wrap{display:grid;gap:12px;padding:12px}
+@media(min-width:980px){.wrap{grid-template-columns:1fr 1fr}}
+.card{background:rgba(17,24,39,.96);border:1px solid #263042;border-radius:16px;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.badge{padding:6px 10px;border-radius:999px;border:1px solid #334155;background:#020617;font-weight:700;font-size:12px}
+.btn{appearance:none;border:none;background:#0b1220;color:var(--ink);padding:9px 12px;border-radius:10px;border:1px solid #334155;cursor:pointer;font-weight:700}
+.btn.primary{background:var(--blue);border-color:#2563eb}
+.btn.good{background:#166534;border-color:#166534}
+.boardArea{display:grid;gap:12px;justify-items:center}
+.board{
+  position:relative;width:var(--board-w);height:var(--board-w);
+  border-radius:20px;overflow:hidden;border:2px solid #334155;background:#0b1220;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 12px 24px rgba(0,0,0,.28)
+}
+.board::before{
+  content:"";position:absolute;inset:0;background-image:var(--img);background-size:cover;background-position:center;
+  opacity:.18;filter:grayscale(.15) saturate(.85)
+}
+.slot{
+  position:absolute;width:50%;height:50%;border:2px dashed rgba(255,255,255,.35);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:6px;text-align:center;font-size:12px;font-weight:700;color:#dbeafe;background:rgba(15,23,42,.12);transition:.18s ease
+}
+.slot .hint{background:rgba(2,6,23,.75);padding:4px 6px;border-radius:8px}
+.slot.hot{box-shadow:0 0 0 4px rgba(59,130,246,.25) inset}
+.slot.good{border-color:var(--good);box-shadow:0 0 0 4px rgba(34,197,94,.20) inset}
+.slot.bad{border-color:var(--bad);box-shadow:0 0 0 4px rgba(239,68,68,.16) inset}
+#s0{left:0;top:0} #s1{right:0;top:0} #s2{left:0;bottom:0} #s3{right:0;bottom:0}
+
+.bank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;justify-items:center}
+.piece{
+  position:relative;width:190px;height:190px;background-image:var(--img);background-size:380px 380px;border:2px solid #475569;
+  box-shadow:0 10px 18px rgba(0,0,0,.30);cursor:grab;user-select:none;
+  transition:transform .16s ease, box-shadow .16s ease, outline-color .16s ease;touch-action:none
+}
+.piece.dragging{transform:scale(1.04);box-shadow:0 16px 26px rgba(0,0,0,.42);z-index:6;cursor:grabbing}
+.piece.selected{outline:4px solid rgba(245,158,11,.6)}
+.piece .label{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(2,6,23,.78);border:1px solid rgba(255,255,255,.10);padding:6px 8px;border-radius:10px;font-size:12px;font-weight:800;text-align:center}
+.p0{background-position:0 0;clip-path:path('M 0 0 H 100 Q 126 0 126 28 Q 126 54 152 54 Q 178 54 178 28 Q 178 0 190 0 V 100 Q 190 126 162 126 Q 136 126 136 152 Q 136 178 162 178 Q 188 178 190 190 H 0 V 0 Z')}
+.p1{background-position:-190px 0;clip-path:path('M 0 0 H 190 V 190 H 178 Q 178 164 152 164 Q 126 164 126 138 Q 126 112 152 112 Q 178 112 178 86 V 0 H 90 Q 90 26 64 26 Q 38 26 38 0 H 0 Z')}
+.p2{background-position:0 -190px;clip-path:path('M 0 0 H 12 Q 14 26 40 26 Q 66 26 66 52 Q 66 78 40 78 Q 14 78 12 104 V 190 H 190 V 90 Q 164 90 164 64 Q 164 38 138 38 Q 112 38 112 64 Q 112 90 86 90 H 0 Z')}
+.p3{background-position:-190px -190px;clip-path:path('M 0 0 H 104 Q 104 26 130 26 Q 156 26 156 52 Q 156 78 130 78 Q 104 78 104 104 H 190 V 190 H 0 V 178 Q 26 176 26 150 Q 26 124 52 124 Q 78 124 78 150 Q 78 176 104 178 V 0 Z')}
+
+.hidden{display:none !important}
+.feedback{min-height:26px;font-size:14px;font-weight:700}
+.success{color:#86efac}.error{color:#fca5a5}.info{color:#cbd5e1}
+.phaseBox{background:#0b1220;border:1px solid #334155;border-radius:12px;padding:10px}
+textarea{width:100%;min-height:86px;border-radius:12px;padding:10px;background:#020617;color:var(--ink);border:1px solid #334155}
+.model{border-left:4px solid #3b82f6;padding-left:10px;margin-top:8px;color:#dbeafe}
+.confetti{position:absolute;inset:0;pointer-events:none}
+.spark{position:absolute;width:10px;height:10px;border-radius:999px;opacity:0;animation:pop .8s ease-out forwards}
+@keyframes pop{0%{transform:translate(0,0) scale(.3);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2);opacity:0}}
+.snap{animation:snapIn .22s ease-out}
+@keyframes snapIn{0%{transform:scale(.7)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Puppy Puzzle Reading Game</h1>
+  <div class="sub">Build the puppy by placing clue pieces where they belong. Then explain what the speaker feels and why.</div>
+</div>
+
+<div class="wrap">
+  <section class="card">
+    <div class="row">
+      <span class="badge">Level <span id="level">1</span></span>
+      <span class="badge">Score <span id="score">0</span></span>
+      <span class="badge">Streak <span id="streak">0</span></span>
+      <span class="badge">Placed <span id="placed">0</span>/4</span>
+      <button class="btn" id="ttsBtn">🔊 Read clues</button>
+    </div>
+    <div class="phaseBox" style="margin-top:10px">
+      <div><b>Mission:</b> Place each clue where it belongs on the puppy puzzle.</div>
+      <div class="model" id="modelText">Model: “truly adore” fits <b>How the speaker feels</b> because it tells a feeling.</div>
+    </div>
+    <h3>Clue Pieces</h3>
+    <div class="bank" id="bank"></div>
+    <div id="feedback" class="feedback info">Tap a puzzle piece to start. You can tap a zone or drag the piece there.</div>
+  </section>
+
+  <section class="card boardArea">
+    <div class="board" id="board">
+      <div class="confetti" id="confetti"></div>
+      <div class="slot" id="s0" data-type="action"><div class="hint">What the dog does</div></div>
+      <div class="slot" id="s1" data-type="feeling"><div class="hint">How the speaker feels</div></div>
+      <div class="slot" id="s2" data-type="description"><div class="hint">Describing words</div></div>
+      <div class="slot" id="s3" data-type="idea"><div class="hint">Big idea clues</div></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="hintBtn">Show a hint</button>
+      <button class="btn" id="resetBtn">Reset round</button>
+      <button class="btn good hidden" id="nextBtn">Next level</button>
+    </div>
+    <div class="phaseBox hidden" id="applyBox">
+      <div><b>Apply:</b> The speaker feels ___ because ___</div>
+      <textarea id="response" placeholder="The speaker feels happy because the poem says the dog is amazing..."></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn good" id="checkBtn">Check response</button>
+      </div>
+      <div id="applyFeedback" class="feedback info"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const LEVELS = [
+  [
+    {id:"p0", clue:"runs and jumps", type:"action", slot:"s0"},
+    {id:"p1", clue:"truly adore", type:"feeling", slot:"s1"},
+    {id:"p2", clue:"amazing", type:"description", slot:"s2"},
+    {id:"p3", clue:"Dogs are the best", type:"idea", slot:"s3"}
+  ],
+  [
+    {id:"p0", clue:"loves when I brush him", type:"action", slot:"s0"},
+    {id:"p1", clue:"never depressed", type:"feeling", slot:"s1"},
+    {id:"p2", clue:"so very cute", type:"description", slot:"s2"},
+    {id:"p3", clue:"as happy as me", type:"idea", slot:"s3"}
+  ]
+];
+
+const state = {
+  level: 0,
+  score: 0,
+  streak: 0,
+  selectedId: null,
+  placed: new Set(),
+  locked: false
+};
+
+const bank = document.getElementById('bank');
+const feedback = document.getElementById('feedback');
+const applyBox = document.getElementById('applyBox');
+const nextBtn = document.getElementById('nextBtn');
+const scoreEl = document.getElementById('score');
+const streakEl = document.getElementById('streak');
+const levelEl = document.getElementById('level');
+const placedEl = document.getElementById('placed');
+const modelText = document.getElementById('modelText');
+const confetti = document.getElementById('confetti');
+
+function currentPieces() { return LEVELS[state.level]; }
+
+function setFeedback(msg, cls="info") {
+  feedback.className = "feedback " + cls;
+  feedback.textContent = msg;
+}
+
+function updateHud() {
+  scoreEl.textContent = state.score;
+  streakEl.textContent = state.streak;
+  levelEl.textContent = state.level + 1;
+  placedEl.textContent = state.placed.size;
+}
+
+function renderBank() {
+  bank.innerHTML = "";
+  currentPieces().forEach(piece => {
+    if (state.placed.has(piece.id)) return;
+    const el = document.createElement('div');
+    el.className = "piece " + piece.id;
+    el.dataset.id = piece.id;
+    el.draggable = true;
+    el.innerHTML = '<div class="label">' + piece.clue + '</div>';
+    el.addEventListener('click', () => selectPiece(piece.id));
+    el.addEventListener('dragstart', e => {
+      selectPiece(piece.id);
+      el.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', piece.id);
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    bank.appendChild(el);
+  });
+}
+
+function clearSelections() {
+  document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
+}
+
+function selectPiece(id) {
+  if (state.locked) return;
+  state.selectedId = id;
+  clearSelections();
+  const el = [...document.querySelectorAll('.piece')].find(x => x.dataset.id === id);
+  if (el) el.classList.add('selected');
+  setFeedback("Now place the piece on the puzzle board.", "info");
+}
+
+function pieceById(id) { return currentPieces().find(p => p.id === id); }
+
+function showZonePulse(zone, cls) {
+  zone.classList.add(cls);
+  setTimeout(() => zone.classList.remove(cls), 380);
+}
+
+function showConfetti(zone) {
+  const rect = zone.getBoundingClientRect();
+  const boardRect = document.getElementById('board').getBoundingClientRect();
+  for (let i = 0; i < 10; i++) {
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.left = (rect.left - boardRect.left + rect.width/2) + 'px';
+    s.style.top = (rect.top - boardRect.top + rect.height/2) + 'px';
+    s.style.background = ['#22c55e','#f59e0b','#3b82f6','#f472b6'][i % 4];
+    s.style.setProperty('--dx', ((Math.random()*140)-70) + 'px');
+    s.style.setProperty('--dy', ((Math.random()*140)-70) + 'px');
+    confetti.appendChild(s);
+    setTimeout(() => s.remove(), 850);
+  }
+}
+
+function lockIntoSlot(piece, slot) {
+  slot.innerHTML = '';
+  const placed = document.createElement('div');
+  placed.className = "piece " + piece.id + " snap";
+  placed.style.width = '100%';
+  placed.style.height = '100%';
+  placed.style.margin = '0';
+  placed.style.border = '0';
+  placed.style.boxShadow = 'none';
+  placed.innerHTML = '<div class="label">' + piece.clue + '</div>';
+  slot.appendChild(placed);
+}
+
+function explainMismatch(pieceType, zoneType) {
+  const map = {
+    action: "That clue tells what the dog does.",
+    feeling: "That clue tells how the speaker feels.",
+    description: "That clue is a describing word or phrase.",
+    idea: "That clue helps show the big idea."
+  };
+  const zoneName = document.querySelector('[data-type="' + zoneType + '"] .hint').textContent.toLowerCase();
+  return map[pieceType] + " It does not fit " + zoneName + ".";
+}
+
+function placeSelectedIn(zone) {
+  if (state.locked) return;
+  if (!state.selectedId) {
+    setFeedback("Select a piece first.", "error");
+    return;
+  }
+  const piece = pieceById(state.selectedId);
+  const ok = zone.dataset.type === piece.type;
+  if (ok) {
+    lockIntoSlot(piece, zone);
+    showZonePulse(zone, 'good');
+    showConfetti(zone);
+    state.placed.add(piece.id);
+    state.score += 10;
+    state.streak += 1;
+    state.selectedId = null;
+    clearSelections();
+    renderBank();
+    updateHud();
+    setFeedback("Correct. Nice fit.", "success");
+    if (state.placed.size === currentPieces().length) finishRound();
+  } else {
+    showZonePulse(zone, 'bad');
+    state.score = Math.max(0, state.score - 2);
+    state.streak = 0;
+    updateHud();
+    setFeedback(explainMismatch(piece.type, zone.dataset.type), "error");
+  }
+}
+
+function finishRound() {
+  state.locked = true;
+  applyBox.classList.remove('hidden');
+  nextBtn.classList.remove('hidden');
+  modelText.textContent = state.level === 0
+    ? "You solved the first puppy puzzle. Now explain what the speaker feels and why."
+    : "You solved the harder puppy puzzle. Use your clues to explain the speaker’s feelings.";
+  setFeedback("Puzzle complete. Now explain your thinking.", "success");
+}
+
+function resetRound() {
+  state.selectedId = null;
+  state.placed = new Set();
+  state.locked = false;
+  clearSelections();
+  const labels = ["What the dog does","How the speaker feels","Describing words","Big idea clues"];
+  document.querySelectorAll('.slot').forEach((slot, i) => {
+    slot.innerHTML = '<div class="hint">' + labels[i] + '</div>';
+  });
+  applyBox.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+  document.getElementById('response').value = '';
+  document.getElementById('applyFeedback').textContent = '';
+  renderBank();
+  updateHud();
+  setFeedback("Round reset. Tap a puzzle piece to start.", "info");
+}
+
+function nextLevel() {
+  if (state.level < LEVELS.length - 1) {
+    state.level += 1;
+    resetRound();
+    setFeedback("Level 2: fewer obvious clues. Build the puppy again.", "info");
+  } else {
+    setFeedback("You beat both levels. Replay or keep polishing your explanation.", "success");
+  }
+}
+
+document.querySelectorAll('.slot').forEach(slot => {
+  slot.addEventListener('click', () => placeSelectedIn(slot));
+  slot.addEventListener('dragover', e => {
+    e.preventDefault();
+    slot.classList.add('hot');
+  });
+  slot.addEventListener('dragleave', () => slot.classList.remove('hot'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault();
+    slot.classList.remove('hot');
+    const id = e.dataTransfer.getData('text/plain');
+    if (id) selectPiece(id);
+    placeSelectedIn(slot);
+  });
+});
+
+document.getElementById('hintBtn').addEventListener('click', () => {
+  if (state.locked) return;
+  const target = currentPieces().find(p => !state.placed.has(p.id));
+  if (!target) return;
+  const slot = document.getElementById(target.slot);
+  showZonePulse(slot, 'hot');
+  setFeedback('Hint: "' + target.clue + '" belongs in ' + slot.querySelector('.hint').textContent.toLowerCase() + '.', "info");
+});
+
+document.getElementById('resetBtn').addEventListener('click', resetRound);
+nextBtn.addEventListener('click', nextLevel);
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  const val = document.getElementById('response').value.toLowerCase();
+  const hasBecause = val.includes('because');
+  const mentionsFeeling = /(love|happy|adore|good|best)/.test(val);
+  const mentionsEvidence = /(adore|amazing|best|happy|depressed|cute|brush|jumps|runs)/.test(val);
+  const out = document.getElementById('applyFeedback');
+  if (hasBecause && mentionsEvidence && mentionsFeeling) {
+    out.textContent = "Strong explanation. You named a feeling and used a clue.";
+    out.className = "feedback success";
+    state.score += 12;
+    updateHud();
+  } else {
+    out.textContent = "Add a feeling word and a clue from the puzzle. Use 'because' to connect them.";
+    out.className = "feedback error";
+  }
+});
+
+document.getElementById('ttsBtn').addEventListener('click', () => {
+  const text = currentPieces().map(p => p.clue).join('. ');
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.92;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+});
+
+updateHud();
+resetRound();
+</script>
+</body>
+</html>

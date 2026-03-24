@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence Builder Arena</title>
+<style>
+:root{--bg:#0f172a;--card:#111827;--accent:#22c55e;--warn:#ef4444;--text:#e5e7eb;--muted:#9ca3af}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.header{padding:12px 16px;background:#020617;border-bottom:1px solid #1f2937}
+.header h2{margin:0;font-size:18px}
+.sub{color:var(--muted);font-size:13px}
+.container{display:grid;gap:12px;padding:12px}
+@media(min-width:900px){.container{grid-template-columns:1.2fr 1fr}}
+.card{background:var(--card);border:1px solid #1f2937;border-radius:12px;padding:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 10px;border-radius:8px;border:1px solid #374151;background:#020617;color:var(--text);cursor:pointer}
+.btn.primary{background:#1d4ed8;border-color:#1d4ed8}
+.btn.success{background:#16a34a;border-color:#16a34a}
+.btn.warn{background:#b91c1c;border-color:#b91c1c}
+.badge{padding:4px 8px;border-radius:999px;background:#020617;border:1px solid #374151}
+.score{font-weight:bold}
+.line{padding:8px;border-radius:8px;border:1px solid #374151;margin:6px 0;cursor:pointer}
+.line.selected{background:#fde68a;color:#111827;border-color:#f59e0b}
+.grid{display:grid;gap:8px}
+@media(min-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+.zone{min-height:110px;border:2px dashed #374151;border-radius:12px;padding:8px}
+.zone h4{margin:4px 0 8px 0;font-size:14px;color:#cbd5f5}
+.tile{padding:6px 8px;border-radius:8px;background:#1f2937;border:1px solid #374151;margin:4px 0;cursor:grab}
+.zone.correct{border-color:#16a34a}
+.zone.wrong{border-color:#ef4444}
+.feedback{min-height:22px;font-size:13px}
+.progress{height:8px;background:#020617;border-radius:999px;border:1px solid #374151;overflow:hidden}
+.progress > div{height:100%;width:0%;background:#22c55e}
+textarea{width:100%;height:80px;border-radius:8px;border:1px solid #374151;background:#020617;color:var(--text);padding:8px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>Evidence Builder Arena</h2>
+  <div class="sub">Goal: Place evidence into the correct category to clear the board.</div>
+</div>
+
+<div class="container">
+  <!-- LEFT: TEXT + SELECT -->
+  <div class="card">
+    <div class="row">
+      <span class="badge">Level <span id="level">1</span></span>
+      <span class="badge">Streak <span id="streak">0</span></span>
+      <span class="badge">Score <span id="score">0</span></span>
+      <button class="btn" id="ttsBtn">🔊 Read</button>
+    </div>
+    <div class="progress" style="margin-top:8px"><div id="bar"></div></div>
+
+    <h3 style="margin:10px 0 6px 0">Text</h3>
+    <div id="text"></div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- RIGHT: BOARD -->
+  <div class="card">
+    <h3 style="margin:0 0 8px 0">Place Evidence</h3>
+    <div class="grid">
+      <div class="zone" data-zone="purpose"><h4>Purpose</h4></div>
+      <div class="zone" data-zone="message"><h4>Message</h4></div>
+      <div class="zone" data-zone="language"><h4>Language</h4></div>
+      <div class="zone" data-zone="structure"><h4>Structure</h4></div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" id="nextRound">Next Round</button>
+      <button class="btn success" id="applyBtn">Apply</button>
+      <button class="btn" id="resetBtn">Reset</button>
+    </div>
+
+    <div id="applyBox" class="hidden" style="margin-top:10px">
+      <textarea id="justify" placeholder="The author wants readers to ___ because ___"></textarea>
+      <button class="btn success" id="checkBtn">Check</button>
+      <div class="feedback" id="applyFeedback"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======= CONTENT (replace with your exact poem lines if needed) =======
+const lines = [
+  {t:"My dog is amazing.", tag:"message"},
+  {t:"He jumps and plays all day.", tag:"language"},
+  {t:"He chases balls and runs fast.", tag:"structure"},
+  {t:"I truly adore my dog.", tag:"purpose"}
+];
+
+// ======= STATE =======
+const state = { level:1, score:0, streak:0, selected:null, placed:0, total:lines.length };
+
+// ======= INIT TEXT =======
+const textDiv = document.getElementById('text');
+function renderText(){
+  textDiv.innerHTML = "";
+  lines.forEach((l,idx)=>{
+    const p = document.createElement('div');
+    p.className = 'line';
+    p.textContent = l.t;
+    p.onclick = ()=>selectLine(p, idx);
+    textDiv.appendChild(p);
+  });
+}
+renderText();
+
+// ======= SELECT =======
+function selectLine(el, idx){
+  document.querySelectorAll('.line').forEach(n=>n.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selected = { idx, text: lines[idx].t, tag: lines[idx].tag };
+  setFeedback("Selected evidence. Now place it.");
+}
+
+// ======= DRAG/DROP (simple) =======
+const zones = document.querySelectorAll('.zone');
+zones.forEach(z=>{
+  z.ondragover = e=>e.preventDefault();
+  z.ondrop = e=>handleDrop(z);
+  z.onclick = ()=>handleDrop(z); // tap-friendly
+});
+
+function handleDrop(zone){
+  if(!state.selected) return setFeedback("Select a line first.");
+  const correct = zone.dataset.zone === state.selected.tag;
+
+  if(correct){
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.textContent = state.selected.text;
+    zone.appendChild(tile);
+
+    zone.classList.add('correct'); setTimeout(()=>zone.classList.remove('correct'),300);
+    state.score += 10; state.streak += 1; state.placed += 1;
+    setFeedback("Correct. Strong evidence.");
+  } else {
+    zone.classList.add('wrong'); setTimeout(()=>zone.classList.remove('wrong'),300);
+    state.score = Math.max(0, state.score - 5); state.streak = 0;
+    setFeedback("That shows a detail, not this category.");
+  }
+
+  state.selected = null;
+  document.querySelectorAll('.line').forEach(n=>n.classList.remove('selected'));
+  updateHUD();
+
+  if(state.placed === state.total){
+    setFeedback("Board cleared. Now apply your thinking.");
+    document.getElementById('applyBox').classList.remove('hidden');
+  }
+}
+
+// ======= HUD =======
+function updateHUD(){
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('streak').textContent = state.streak;
+  document.getElementById('level').textContent = state.level;
+  const pct = Math.round((state.placed/state.total)*100);
+  document.getElementById('bar').style.width = pct + "%";
+}
+function setFeedback(msg){ document.getElementById('feedback').textContent = msg; }
+
+// ======= APPLY =======
+document.getElementById('applyBtn').onclick = ()=>{
+  document.getElementById('applyBox').classList.toggle('hidden');
+};
+document.getElementById('checkBtn').onclick = ()=>{
+  const val = document.getElementById('justify').value.toLowerCase();
+  const ok = val.includes("because") && val.length > 15;
+  document.getElementById('applyFeedback').textContent = ok
+    ? "Good. You used reasoning with evidence."
+    : "Add a clear reason using 'because' and connect to your evidence.";
+};
+
+// ======= NEXT / RESET =======
+document.getElementById('nextRound').onclick = ()=>{
+  state.level += 1; state.placed = 0;
+  document.querySelectorAll('.zone').forEach(z=>{
+    z.querySelectorAll('.tile').forEach(t=>t.remove());
+  });
+  document.getElementById('applyBox').classList.add('hidden');
+  updateHUD(); setFeedback("New round. It gets harder.");
+};
+document.getElementById('resetBtn').onclick = ()=>{
+  state.level = 1; state.score = 0; state.streak = 0; state.placed = 0;
+  document.querySelectorAll('.zone').forEach(z=>{
+    z.querySelectorAll('.tile').forEach(t=>t.remove());
+  });
+  document.getElementById('applyBox').classList.add('hidden');
+  updateHUD(); setFeedback("Reset.");
+};
+
+// ======= TTS =======
+document.getElementById('ttsBtn').onclick = ()=>{
+  const txt = lines.map(l=>l.t).join(" ");
+  const u = new SpeechSynthesisUtterance(txt);
+  speechSynthesis.speak(u);
+};
+
+// initial HUD
+updateHUD(); setFeedback("Tap a line to start.");
+</script>
+
+</body>
+</html>
