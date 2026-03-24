@@ -155,3 +155,5 @@ scalability, security, maintainability, edge cases, simpler alternatives.
 
 <!-- Format: - YYYY-MM-DD: [what went wrong] → [what the fix was] -->
 
+
+- 2026-03-24: BTS stop-scan detected → BTS_ZERO_DECISIONS: No decisions were recorded this session — protocol violation
