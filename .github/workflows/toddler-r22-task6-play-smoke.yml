@@ -26,7 +26,9 @@ jobs:
       - name: Install Android API 36
         run: |
           set -euo pipefail
+          set +o pipefail
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+          set -o pipefail
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0'
       - name: Download verified Gradle 8.13
         run: |
