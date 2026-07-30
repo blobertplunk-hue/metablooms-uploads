@@ -47,7 +47,17 @@ jobs:
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/project"
-          "$RUNNER_TEMP/gradle-8.13/bin/gradle" --no-daemon --stacktrace :app:bundleRelease :app:assembleRelease
+          build_ok=0
+          for attempt in 1 2 3; do
+            if "$RUNNER_TEMP/gradle-8.13/bin/gradle" --no-daemon --stacktrace :app:bundleRelease :app:assembleRelease; then
+              build_ok=1
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              sleep $((attempt * 30))
+            fi
+          done
+          test "$build_ok" -eq 1
           AAB=app/build/outputs/bundle/release/app-release.aab
           APK=app/build/outputs/apk/release/app-release.apk
           test -s "$AAB"
