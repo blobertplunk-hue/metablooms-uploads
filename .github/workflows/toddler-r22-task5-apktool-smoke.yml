@@ -1,0 +1,61 @@
+name: Toddler R22 Task5 Apktool Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'ci/toddler-r22-task5/**'
+      - '.github/workflows/toddler-r22-task5-apktool-smoke.yml'
+  push:
+    branches:
+      - 'ci/toddler-r22-task5-apktool-smoke-20260730'
+
+permissions:
+  contents: read
+
+jobs:
+  apktool-rebuild-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout smoke source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Verify exact Task 5 native sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd ci/toddler-r22-task5/apktool_project
+          echo '3a2df77965c9d02ceacdfeb3776d11ac1768363787b98743502cff1768bbf284  AndroidManifest.xml' | sha256sum -c -
+          echo '08b6b93b036ab509c25578511da19fa6695eb4b6541a360eba323aaaf0f6a2f0  apktool.yml' | sha256sum -c -
+          echo '58231bba5a87ac770544014e391b337068837b74b69e2a8fb0824e573949af58  res/values/strings.xml' | sha256sum -c -
+          echo 'b3ecc7f533214d87fa098c8cd99f337b87c8d11f0a8ff8a848ccce0cda33c61e  res/values/styles.xml' | sha256sum -c -
+          echo '1efb4a67af0c29adce640986eede241ff0e784cb4d1ce00f9e371d64bd25e656  smali/com/metablooms/toddlersounds/MainActivity.smali' | sha256sum -c -
+
+      - name: Download and verify Apktool 3.0.3
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-delay 2 \
+            'https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_3.0.3.jar' \
+            -o "$RUNNER_TEMP/apktool_3.0.3.jar"
+          echo 'dbf930b076c6b9be08d57c449cacefc3bdd6b71ebd59b3066fc0e1f5b14f9423  '"$RUNNER_TEMP/apktool_3.0.3.jar" | sha256sum -c -
+          java -jar "$RUNNER_TEMP/apktool_3.0.3.jar" --version
+
+      - name: Rebuild exact native source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -jar "$RUNNER_TEMP/apktool_3.0.3.jar" b \
+            ci/toddler-r22-task5/apktool_project \
+            -o "$RUNNER_TEMP/ToddlerSounds_R22_Task5_smoke.apk"
+          test -s "$RUNNER_TEMP/ToddlerSounds_R22_Task5_smoke.apk"
+          unzip -t "$RUNNER_TEMP/ToddlerSounds_R22_Task5_smoke.apk"
+          unzip -l "$RUNNER_TEMP/ToddlerSounds_R22_Task5_smoke.apk" | grep -E 'AndroidManifest.xml|classes.dex|assets/index.html'
+          sha256sum "$RUNNER_TEMP/ToddlerSounds_R22_Task5_smoke.apk"
+          echo 'PASS_TASK5_APKTOOL_REBUILD_SMOKE'
