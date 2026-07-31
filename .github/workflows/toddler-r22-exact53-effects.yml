@@ -15,17 +15,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Restore exact acquisition payload
+      - name: Verify direct acquisition sources
         run: |
           set -euo pipefail
-          base64 -d ci/toddler-r22-exact53/payload.tar.gz.b64 > "$RUNNER_TEMP/payload.tar.gz"
-          tar -xzf "$RUNNER_TEMP/payload.tar.gz" -C ci/toddler-r22-exact53
           python -m py_compile ci/toddler-r22-exact53/acquire_effects.py
-      - name: Install FFmpeg and current yt-dlp
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('ci/toddler-r22-exact53/sources.json')
+          rows=json.loads(p.read_text())
+          assert len(rows)==26
+          assert len({r['id'] for r in rows})==26
+          print('PASS: exact 26-row source manifest')
+          PY
+          sha256sum ci/toddler-r22-exact53/acquire_effects.py ci/toddler-r22-exact53/sources.json
+      - name: Install FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          python -m pip install --upgrade yt-dlp
           ffmpeg -version | head -1
           ffprobe -version | head -1
       - name: Acquire and validate exact 26 effects
