@@ -21,8 +21,13 @@ jobs:
           base64 -d ci/toddler-r22-exact53/payload.tar.gz.b64 > "$RUNNER_TEMP/payload.tar.gz"
           tar -xzf "$RUNNER_TEMP/payload.tar.gz" -C ci/toddler-r22-exact53
           python -m py_compile ci/toddler-r22-exact53/acquire_effects.py
-      - name: Install current yt-dlp
-        run: python -m pip install --upgrade yt-dlp
+      - name: Install FFmpeg and current yt-dlp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade yt-dlp
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
       - name: Acquire and validate exact 26 effects
         run: |
           set -euo pipefail
