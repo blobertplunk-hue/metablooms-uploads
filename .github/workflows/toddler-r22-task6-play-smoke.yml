@@ -40,16 +40,6 @@ jobs:
         run: |
           set -euo pipefail
           keytool -genkeypair -keystore "$RUNNER_TEMP/r22-ci.jks" -storepass ci-password -keypass ci-password -alias toddler-sounds -keyalg RSA -keysize 2048 -validity 3650 -dname 'CN=MetaBlooms CI,O=MetaBlooms,C=US'
-      - name: Diagnose Kotlin runtime graph
-        env:
-          METABLOOMS_R22_KEYSTORE: ${{ runner.temp }}/r22-ci.jks
-          METABLOOMS_R22_KEYSTORE_PASSWORD: ci-password
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP/project"
-          "$RUNNER_TEMP/gradle-8.13/bin/gradle" --no-daemon :app:dependencyInsight --dependency kotlin-stdlib-jdk8 --configuration releaseRuntimeClasspath
-          "$RUNNER_TEMP/gradle-8.13/bin/gradle" --no-daemon :app:dependencyInsight --dependency kotlin-stdlib-jdk7 --configuration releaseRuntimeClasspath
-          "$RUNNER_TEMP/gradle-8.13/bin/gradle" --no-daemon :app:dependencyInsight --dependency kotlin-stdlib --configuration releaseRuntimeClasspath
       - name: Compile Billing 9.1 AAB and APK
         env:
           METABLOOMS_R22_KEYSTORE: ${{ runner.temp }}/r22-ci.jks
