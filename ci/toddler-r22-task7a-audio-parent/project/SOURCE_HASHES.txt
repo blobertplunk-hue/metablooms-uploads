@@ -1,0 +1,12 @@
+9dd605daa496818602aeddbaa0df476c523875b7d188d0eb465927f34c0a1c7c  ./app/build.gradle
+f2c1dec204e02cf98aac1a8ea335ae2e1adfa7488ad78b92fe00d256649ecb18  ./app/proguard-rules.pro
+17170a939ed1fbab66deb72ec040565ab6b149fa60eb56b5c01bae47ef3ed654  ./app/src/main/AndroidManifest.xml
+1bac6cc0a4bc3ee20cab4ed8d2f0e5a5eb9d6eca5ccc8b0e418004cfee38ac17  ./app/src/main/assets/index.html
+86fbc4eb982644d8f6e7717bc8360609a4119f3edf1237d703a52c9ede105feb  ./app/src/main/java/com/metablooms/toddlersounds/MainActivity.java
+dde194f8cfa8891bb8d70fa0bb4112ab4cb14aa61cdcd5fbd0467f90df99cbc2  ./app/src/main/res/drawable/ic_launcher.xml
+58231bba5a87ac770544014e391b337068837b74b69e2a8fb0824e573949af58  ./app/src/main/res/values/strings.xml
+b3ecc7f533214d87fa098c8cd99f337b87c8d11f0a8ff8a848ccce0cda33c61e  ./app/src/main/res/values/styles.xml
+98de52732e119b0721ad813150911dc88b6609c6d369a4906dce698f012ed4bc  ./app/src/main/res/xml/data_extraction_rules.xml
+4175d4aa663f811806eb0e71f3c02bb9e0968ca5da996f0bb7ccd5ee81b76d14  ./build.gradle
+e6b436ff6a08da8b8c05e0e2fc1a7f40f41701bb506cd80fc2ddfd7b6e3b3b2b  ./gradle.properties
+7a14b0d8f63d21dae2a101102335120707e05fdaa1b553c02376164c6530fd30  ./settings.gradle
