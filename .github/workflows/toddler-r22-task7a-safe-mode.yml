@@ -19,11 +19,12 @@ jobs:
       - name: Restore exact safe-mode fixture
         run: |
           set -euo pipefail
-          base64 -d ci/toddler-r22-task7a-safe-mode/project.tar.gz.b64 > "$RUNNER_TEMP/project.tar.gz"
+          base64 -d ci/toddler-r22-task7a-safe-mode/project-v2.tar.gz.b64 > "$RUNNER_TEMP/project.tar.gz"
           tar -xzf "$RUNNER_TEMP/project.tar.gz" -C "$RUNNER_TEMP"
           cd "$RUNNER_TEMP/ci_project"
           sha256sum -c SOURCE_HASHES.txt
           ! grep -R 'startLockTask()' app/src/main/java
+          grep -R 'setText("Exit test")' app/src/main/java
       - name: Install Android API 36
         run: |
           set -euo pipefail
@@ -53,12 +54,14 @@ jobs:
           test -s "$APK"
           unzip -t "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+          unzip -p "$APK" classes.dex | strings | grep -F 'Exit test'
+          if unzip -p "$APK" classes.dex | strings | grep -F 'startLockTask'; then exit 1; fi
           cp "$APK" "$RUNNER_TEMP/ToddlerSounds_R22_SAFE_MODE_NATIVE_SHELL.apk"
           sha256sum "$RUNNER_TEMP/ToddlerSounds_R22_SAFE_MODE_NATIVE_SHELL.apk" > "$RUNNER_TEMP/ToddlerSounds_R22_SAFE_MODE_NATIVE_SHELL.apk.sha256"
       - name: Upload safe-mode native shell
         uses: actions/upload-artifact@v4
         with:
-          name: ToddlerSounds-R22-Safe-Mode-Native-Shell
+          name: ToddlerSounds-R22-Safe-Mode-Native-Shell-v2
           path: |
             ${{ runner.temp }}/ToddlerSounds_R22_SAFE_MODE_NATIVE_SHELL.apk
             ${{ runner.temp }}/ToddlerSounds_R22_SAFE_MODE_NATIVE_SHELL.apk.sha256
