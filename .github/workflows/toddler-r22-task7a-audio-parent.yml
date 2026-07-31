@@ -19,8 +19,7 @@ jobs:
       - name: Restore exact native fixture
         run: |
           set -euo pipefail
-          base64 -d ci/toddler-r22-task7a-audio-parent/project.tar.gz.b64 > "$RUNNER_TEMP/project.tar.gz"
-          tar -xzf "$RUNNER_TEMP/project.tar.gz" -C "$RUNNER_TEMP"
+          cp -a ci/toddler-r22-task7a-audio-parent/project "$RUNNER_TEMP/project"
           cd "$RUNNER_TEMP/project"
           sha256sum -c SOURCE_HASHES.txt
       - name: Install Android API 36
