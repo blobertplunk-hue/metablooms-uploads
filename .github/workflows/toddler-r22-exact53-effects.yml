@@ -1,0 +1,40 @@
+name: Toddler R22 Exact53 Effect Acquisition
+on:
+  pull_request:
+    paths:
+      - 'ci/toddler-r22-exact53/**'
+      - '.github/workflows/toddler-r22-exact53-effects.yml'
+permissions:
+  contents: read
+jobs:
+  acquire-effects:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore exact acquisition payload
+        run: |
+          set -euo pipefail
+          base64 -d ci/toddler-r22-exact53/payload.tar.gz.b64 > "$RUNNER_TEMP/payload.tar.gz"
+          tar -xzf "$RUNNER_TEMP/payload.tar.gz" -C ci/toddler-r22-exact53
+          python -m py_compile ci/toddler-r22-exact53/acquire_effects.py
+      - name: Install current yt-dlp
+        run: python -m pip install --upgrade yt-dlp
+      - name: Acquire and validate exact 26 effects
+        run: |
+          set -euo pipefail
+          python ci/toddler-r22-exact53/acquire_effects.py "$RUNNER_TEMP/r22-effects"
+          test "$(find "$RUNNER_TEMP/r22-effects/effects" -type f -name '*.mp3' | wc -l)" -eq 26
+          du -h "$RUNNER_TEMP/r22-effects/effects"/*
+      - name: Upload exact effects
+        uses: actions/upload-artifact@v4
+        with:
+          name: ToddlerSounds-R22-Exact53-Effects
+          path: |
+            ${{ runner.temp }}/r22-effects/effects
+            ${{ runner.temp }}/r22-effects/evidence
+          if-no-files-found: error
+          retention-days: 2
