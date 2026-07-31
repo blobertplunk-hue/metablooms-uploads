@@ -36,10 +36,10 @@ jobs:
           curl -fL --retry 4 --retry-delay 2 'https://services.gradle.org/distributions/gradle-8.13-bin.zip' -o "$RUNNER_TEMP/gradle-8.13-bin.zip"
           echo '20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78  '"$RUNNER_TEMP/gradle-8.13-bin.zip" | sha256sum -c -
           unzip -q "$RUNNER_TEMP/gradle-8.13-bin.zip" -d "$RUNNER_TEMP"
-      - name: Generate temporary signing identity
+      - name: Generate temporary test signing identity
         run: |
           set -euo pipefail
-          keytool -genkeypair -keystore "$RUNNER_TEMP/r22-ci.jks" -storepass ci-password -keypass ci-password -alias toddler-sounds -keyalg RSA -keysize 2048 -validity 3650 -dname 'CN=MetaBlooms CI,O=MetaBlooms,C=US'
+          keytool -genkeypair -keystore "$RUNNER_TEMP/r22-ci.jks" -storepass ci-password -keypass ci-password -alias toddler-sounds -keyalg RSA -keysize 2048 -validity 3650 -dname 'CN=MetaBlooms Phone Test,O=MetaBlooms,C=US'
       - name: Compile Billing 9.1 AAB and APK
         env:
           METABLOOMS_R22_KEYSTORE: ${{ runner.temp }}/r22-ci.jks
@@ -65,6 +65,19 @@ jobs:
           unzip -t "$AAB"
           unzip -t "$APK"
           jarsigner -verify "$AAB"
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          sha256sum "$AAB" "$APK"
-          echo PASS_TASK6_PLAY_BILLING_AAB_APK_COMPILE_SMOKE
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee app/build/outputs/PHONE_TEST_APK_SIGNATURE.txt
+          sha256sum "$AAB" "$APK" | tee app/build/outputs/PHONE_TEST_SHA256SUMS.txt
+          cp "$APK" app/build/outputs/ToddlerSounds_R22_PHONE_TEST_TEMP_SIGNED.apk
+          cp "$AAB" app/build/outputs/ToddlerSounds_R22_PHONE_TEST_TEMP_SIGNED.aab
+          echo PASS_TASK7_PHONE_TEST_APK_BUILD
+      - name: Upload phone-test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ToddlerSounds-R22-Phone-Test
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/project/app/build/outputs/ToddlerSounds_R22_PHONE_TEST_TEMP_SIGNED.apk
+            ${{ runner.temp }}/project/app/build/outputs/ToddlerSounds_R22_PHONE_TEST_TEMP_SIGNED.aab
+            ${{ runner.temp }}/project/app/build/outputs/PHONE_TEST_APK_SIGNATURE.txt
+            ${{ runner.temp }}/project/app/build/outputs/PHONE_TEST_SHA256SUMS.txt
