@@ -1,0 +1,134 @@
+name: Android Recorder Stage002 Hydration Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  hydrate-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      ANDROID_HOME: ${{ runner.temp }}/mb-android-sdk
+      GRADLE_USER_HOME: ${{ runner.temp }}/mb-gradle-home
+      CMDLINE_ZIP: commandlinetools-linux-15859902_latest.zip
+      CMDLINE_SHA256: 4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583
+      GRADLE_VERSION: 9.5.0
+    steps:
+      - name: Checkout exact triggering commit without third-party action
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          git init
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "$GITHUB_SHA"
+          git checkout --detach FETCH_HEAD
+
+      - name: Hydrate and verify Android SDK and Gradle
+        shell: bash
+        run: |
+          set -euo pipefail
+          CACHE="$RUNNER_TEMP/mb-cache"
+          mkdir -p "$CACHE" "$ANDROID_HOME/cmdline-tools" "$GRADLE_USER_HOME"
+          curl --fail --location --retry 5 --retry-all-errors --output "$CACHE/$CMDLINE_ZIP" "https://dl.google.com/android/repository/$CMDLINE_ZIP"
+          echo "$CMDLINE_SHA256  $CACHE/$CMDLINE_ZIP" | sha256sum --check --strict
+          mkdir -p "$CACHE/cmdline-unpack"
+          unzip -q "$CACHE/$CMDLINE_ZIP" -d "$CACHE/cmdline-unpack"
+          mv "$CACHE/cmdline-unpack/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          sdkmanager --sdk_root="$ANDROID_HOME" "platform-tools" "platforms;android-37" "build-tools;36.0.0"
+          test -f "$ANDROID_HOME/platforms/android-37/android.jar"
+          test -x "$ANDROID_HOME/platform-tools/adb"
+          test -f "$ANDROID_HOME/build-tools/36.0.0/aapt2"
+          sdkmanager --sdk_root="$ANDROID_HOME" --list_installed > "$RUNNER_TEMP/sdk-installed.txt"
+          GRADLE_ZIP="$CACHE/gradle-$GRADLE_VERSION-bin.zip"
+          GRADLE_SHA_FILE="$CACHE/gradle-$GRADLE_VERSION-bin.zip.sha256"
+          curl --fail --location --retry 5 --retry-all-errors --output "$GRADLE_ZIP" "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip"
+          curl --fail --location --retry 5 --retry-all-errors --output "$GRADLE_SHA_FILE" "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip.sha256"
+          GRADLE_SHA256="$(tr -d '[:space:]' < "$GRADLE_SHA_FILE")"
+          echo "$GRADLE_SHA256  $GRADLE_ZIP" | sha256sum --check --strict
+          unzip -q "$GRADLE_ZIP" -d "$RUNNER_TEMP"
+          "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin/gradle" --version
+          printf '%s\n' "$GRADLE_SHA256" > "$RUNNER_TEMP/gradle-bin.sha256"
+          cp "$GRADLE_ZIP" "$RUNNER_TEMP/gradle-$GRADLE_VERSION-bin.zip"
+
+      - name: Verify manifest policy and build shell RED to GREEN
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROJECT="$GITHUB_WORKSPACE/android-recorder-stage002/project"
+          cd "$PROJECT"
+          python3 scripts/verify_manifest_policy.py
+          "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin/gradle" wrapper --gradle-version "$GRADLE_VERSION" --distribution-type bin
+          chmod +x gradlew
+          ./gradlew --version
+          ./gradlew :app:assembleDebug --stacktrace
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          sha256sum app/build/outputs/apk/debug/app-debug.apk > "$RUNNER_TEMP/app-debug.apk.sha256"
+
+      - name: Package verified sandbox-import payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          PAYLOAD="$RUNNER_TEMP/stage002-payload"
+          PROJECT="$GITHUB_WORKSPACE/android-recorder-stage002/project"
+          mkdir -p "$PAYLOAD"
+          cp -a "$ANDROID_HOME" "$PAYLOAD/android-sdk"
+          cp -a "$RUNNER_TEMP/gradle-$GRADLE_VERSION" "$PAYLOAD/gradle-$GRADLE_VERSION"
+          cp "$RUNNER_TEMP/gradle-$GRADLE_VERSION-bin.zip" "$PAYLOAD/"
+          cp -a "$GRADLE_USER_HOME" "$PAYLOAD/gradle-home"
+          cp -a "$PROJECT" "$PAYLOAD/project"
+          rm -rf "$PAYLOAD/project/.gradle"
+          cp "$RUNNER_TEMP/sdk-installed.txt" "$PAYLOAD/SDK_INSTALLED.txt"
+          cp "$RUNNER_TEMP/app-debug.apk.sha256" "$PAYLOAD/APP_DEBUG_APK.sha256"
+          cp "$RUNNER_TEMP/gradle-bin.sha256" "$PAYLOAD/GRADLE_BIN.sha256"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib
+          payload = pathlib.Path(os.environ['RUNNER_TEMP']) / 'stage002-payload'
+          apk = payload / 'project/app/build/outputs/apk/debug/app-debug.apk'
+          def sha256(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as f:
+                  for chunk in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+          proof = {
+              'schema': 'metablooms.android_recorder.stage002.remote_proof.v1',
+              'stage': 'ANDROID_RECORDER_STAGE002_TOOLCHAIN_HYDRATION_AND_BUILD_SHELL_RED_GREEN',
+              'github_repository': os.environ['GITHUB_REPOSITORY'],
+              'github_sha': os.environ['GITHUB_SHA'],
+              'commandline_tools_filename': os.environ['CMDLINE_ZIP'],
+              'commandline_tools_sha256': os.environ['CMDLINE_SHA256'],
+              'android_platform': 'platforms;android-37',
+              'android_build_tools': 'build-tools;36.0.0',
+              'gradle_version': os.environ['GRADLE_VERSION'],
+              'gradle_bin_sha256': (payload / 'GRADLE_BIN.sha256').read_text().strip(),
+              'manifest_policy': 'PASS',
+              'assemble_debug': 'PASS',
+              'apk_sha256': sha256(apk),
+          }
+          (payload / 'STAGE002_REMOTE_PROOF.json').write_text(json.dumps(proof, indent=2, sort_keys=True) + '\n')
+          PY
+          cd "$RUNNER_TEMP"
+          tar --zstd -cf android-recorder-stage002-toolchain.tar.zst stage002-payload
+          sha256sum android-recorder-stage002-toolchain.tar.zst > android-recorder-stage002-toolchain.tar.zst.sha256
+          cp stage002-payload/STAGE002_REMOTE_PROOF.json STAGE002_REMOTE_PROOF.json
+
+      - name: Upload immutable hydration artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: android-recorder-stage002-toolchain
+          path: |
+            ${{ runner.temp }}/android-recorder-stage002-toolchain.tar.zst
+            ${{ runner.temp }}/android-recorder-stage002-toolchain.tar.zst.sha256
+            ${{ runner.temp }}/STAGE002_REMOTE_PROOF.json
+          if-no-files-found: error
+          retention-days: 7
