@@ -1,0 +1,2 @@
+ANDROID_RECORDER_STAGE002_TOOLCHAIN_HYDRATION_AND_BUILD_SHELL_RED_GREEN
+triggered_after_base_workflow_install=true
