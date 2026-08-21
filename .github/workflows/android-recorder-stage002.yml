@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - android-recorder-stage002-20260821
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -111,7 +114,7 @@ jobs:
           cp "$RUNNER_TEMP/gradle-bin.sha256" "$PAYLOAD/GRADLE_BIN.sha256"
 
           python3 - <<'PY'
-          import hashlib, json, os, pathlib, subprocess
+          import hashlib, json, os, pathlib
           payload = pathlib.Path(os.environ['RUNNER_TEMP']) / 'stage002-payload'
           project = payload / 'project'
           apk = project / 'app/build/outputs/apk/debug/app-debug.apk'
